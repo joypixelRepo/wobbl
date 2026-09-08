@@ -25,6 +25,16 @@ export const metadata: Metadata = {
     description: 'Una web con la que se juega. Juguetes de diseño, hechos para desmontarse.',
     type: 'website',
   },
+  // WOBBL es una marca inventada: sus productos, precios, dirección y empresa
+  // no existen. Fuera de los buscadores hasta que se decida lo contrario.
+  // Para publicarla, cambiar los dos `false` por `true` y borrar la cabecera
+  // X-Robots-Tag de next.config.mjs.
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false },
+  },
 };
 
 export const viewport: Viewport = {
