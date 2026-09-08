@@ -345,31 +345,47 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .pl-skip:active { transform: scale(.94); }
 
 /* ===================== TOY BOX MENU ===================== */
-.tb { position: fixed; inset: 0; z-index: 10500; perspective: 1400px; }
+.tb {
+  position: fixed; inset: 0; z-index: 10500; perspective: 1400px;
+  /* The crate itself is opaque; this frosts the strip of page still showing
+     while it slides up, so the opening reads as glass. */
+  backdrop-filter: blur(26px) saturate(1.5);
+  -webkit-backdrop-filter: blur(26px) saturate(1.5);
+}
 .tb-crate {
   position: absolute; inset: 0;
-  /* Opaque, not translucent: at any alpha the bright world behind still read
-     through, and the lid no longer needs a shared 3D space. The blur is kept
-     for the sliver visible while the crate slides up. */
-  background: #0B0712;
-  backdrop-filter: blur(30px) saturate(1.4);
-  -webkit-backdrop-filter: blur(30px) saturate(1.4);
+  /* Opaque base so the page behind is never legible, plus a colour wash built
+     from the live palette so the menu takes the colour of the world you
+     opened it from. The blur lives on .tb, where it is actually visible. */
+  background: #0A0712;
   color: var(--cream);
   display: flex; flex-direction: column; justify-content: center;
   padding: clamp(96px, 13vh, 140px) var(--gut) clamp(24px, 5vh, 48px);
-  background-image:
-    radial-gradient(circle at 12% 16%, rgba(255,206,0,.22), transparent 44%),
-    radial-gradient(circle at 88% 74%, rgba(43,43,255,.34), transparent 46%),
-    radial-gradient(circle at 60% 108%, rgba(255,127,196,.20), transparent 44%);
 }
+/* The colour wash. Its own layer so the blur underneath stays visible. */
+.tb-crate::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 14% 12%, color-mix(in srgb, var(--a) 62%, transparent), transparent 52%),
+    radial-gradient(circle at 86% 20%, color-mix(in srgb, var(--c) 50%, transparent), transparent 48%),
+    radial-gradient(circle at 76% 94%, color-mix(in srgb, var(--b) 66%, transparent), transparent 56%),
+    radial-gradient(circle at 18% 90%, color-mix(in srgb, var(--d) 52%, transparent), transparent 52%);
+  opacity: .8;
+  transition: background .9s var(--ease-out);
+}
+.tb-grid, .tb-foot { position: relative; z-index: 1; }
+
 /* The rim of the open box — always readable. */
 .tb-rim {
   position: absolute; top: 0; left: 0; right: 0;
   height: clamp(86px, 13vh, 116px);
   align-content: center;
   padding-bottom: 14px;
-  background: var(--yellow);
-  color: var(--ink);
+  background: var(--c);
+  color: var(--on-c);
+  transition: background-color .9s var(--ease-out), color .9s var(--ease-out);
   display: grid; place-items: center;
   font-family: var(--font-display), sans-serif; font-weight: 700;
   font-size: clamp(1rem, 2.4vw, 1.7rem); letter-spacing: .3em;
@@ -380,8 +396,8 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .tb-lid {
   position: absolute; top: 0; left: -2%; right: -2%;
   height: clamp(90px, 14vh, 132px);
-  background: var(--tomato);
-  color: var(--cream);
+  background: var(--a);
+  color: var(--on-a);
   display: grid; place-items: center;
   border-radius: 0 0 14px 14px;
   font-family: var(--font-display), sans-serif; font-weight: 700;
@@ -505,7 +521,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   font-size: .66rem; font-weight: 700;
   transition: background-color .3s ease, transform .3s var(--ease-toy);
 }
-.hud-count.has { background: var(--a); color: #fff; transform: scale(1.12); }
+.hud-count.has { background: var(--a); color: var(--on-a); transform: scale(1.12); }
 .hud-btn:hover .hud-count { background: var(--bg); color: var(--fg); }
 
 .hud-menu {
@@ -1333,7 +1349,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   cursor: pointer;
   transition: transform .25s var(--ease-toy), background-color .25s ease;
 }
-.fac-mould button:hover { transform: scale(1.18); background: var(--a); color: var(--fg); }
+.fac-mould button:hover { transform: scale(1.18); background: var(--a); color: var(--on-a); }
 .fac-mould button:active { transform: scale(.9); }
 .fac-mould-view {
   width: 54px; height: 54px; border-radius: 14px;
@@ -1616,7 +1632,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   position: absolute; right: -3px; top: -3px;
   width: 17px; height: 17px; border-radius: 50%;
   display: grid; place-items: center;
-  background: var(--c); color: var(--ink);
+  background: var(--c); color: var(--on-c);
   font-size: .68rem; font-weight: 700; line-height: 1;
   opacity: 0; transform: scale(.5);
   transition: opacity .25s ease, transform .3s var(--ease-toy);
@@ -1936,7 +1952,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   transition: transform .3s var(--ease-toy), background-color .3s ease;
 }
 .tbx-add span { font-size: .9rem; line-height: 1; }
-.tbx-add:hover { transform: scale(1.08) rotate(-2deg); background: var(--a); color: var(--fg); }
+.tbx-add:hover { transform: scale(1.08) rotate(-2deg); background: var(--a); color: var(--on-a); }
 .tbx-add:active { transform: scale(.92); }
 
 .shop-fine {
@@ -1952,7 +1968,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .footer { position: relative; background: var(--bg); color: var(--fg); overflow: clip; }
 .footer-mq {
   border-top: 5px solid var(--fg); border-bottom: 5px solid var(--fg);
-  background: var(--c); color: var(--ink);
+  background: var(--c); color: var(--on-c);
   padding: 10px 0;
 }
 .footer-main { display: grid; gap: clamp(26px, 4vw, 54px); }
@@ -1985,7 +2001,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .footer-form input:focus { border-color: var(--c); background: rgba(255,255,255,.06); }
 .footer-form button {
   padding: 13px 22px; border-radius: 99px;
-  background: var(--c); color: var(--ink);
+  background: var(--c); color: var(--on-c);
   font-family: var(--font-ui), sans-serif; font-weight: 700;
   font-size: .68rem; letter-spacing: .16em;
   cursor: pointer;
@@ -2017,7 +2033,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   font-size: .62rem; font-weight: 700; letter-spacing: .06em;
   transition: transform .35s var(--ease-toy), background-color .3s ease, color .3s ease;
 }
-.footer-soc:hover { transform: translateY(-6px) rotate(9deg); background: var(--c); color: var(--ink); border-color: var(--c); }
+.footer-soc:hover { transform: translateY(-6px) rotate(9deg); background: var(--c); color: var(--on-c); border-color: var(--c); }
 
 .footer-bottom {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
@@ -2106,8 +2122,8 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   background: var(--fg);
   color: var(--bg);
 }
-.ribbon-a { background: var(--a); color: var(--fg); }
-.ribbon-b { background: var(--b); color: var(--bg); }
+.ribbon-a { background: var(--a); color: var(--on-a); }
+.ribbon-b { background: var(--b); color: var(--on-b); }
 
 .statement {
   background: var(--bg);
@@ -2195,7 +2211,7 @@ body.has-toy-cursor *:focus-visible { outline-color: var(--b); }
   animation: howto-pulse 1.8s ease-in-out infinite;
 }
 .howto-step.is-done { opacity: .9; }
-.howto-step.is-done > b { background: var(--d); color: var(--ink); }
+.howto-step.is-done > b { background: var(--d); color: var(--on-d); }
 @keyframes howto-pulse {
   0%,100% { box-shadow: 0 0 0 0 currentColor; }
   50% { box-shadow: 0 0 0 4px rgba(255,255,255,.12); }
@@ -2205,8 +2221,8 @@ body.has-toy-cursor *:focus-visible { outline-color: var(--b); }
   position: absolute; z-index: 8;
   display: inline-flex; align-items: center; gap: 7px;
   padding: 7px 13px; border-radius: 99px;
-  background: var(--c); color: var(--ink);
-  border: 3px solid var(--fg);
+  background: var(--c); color: var(--on-c);
+  border: 3px solid var(--on-c);
   font-family: var(--font-ui), sans-serif; font-weight: 700;
   font-size: .6rem; letter-spacing: .1em; white-space: nowrap;
   box-shadow: 3px 4px 0 var(--fg);
@@ -2269,6 +2285,9 @@ body.has-toy-cursor *:focus-visible { outline-color: var(--b); }
   /* The rim label collides with the logo on a narrow bar, and the crate is
      obviously the menu without it. */
   .tb-rim span { display: none; }
+  /* "CERRAR" is wider than "MENÚ", so the caption changed the size of the
+     control as you opened it. The icon already says which state it is in. */
+  .hud-menu em { display: none; }
   .tb-grid { grid-template-columns: 1fr; gap: 10px; }
   .tb-item:last-child { grid-column: auto; }
   /* Rows instead of tiles: identical height, icon left, text right. */

@@ -76,6 +76,19 @@ export function step(world: World, dtRaw: number) {
   for (let s = 0; s < steps; s++) integrate(world, h);
 }
 
+/** Hard containment. Position only — no bounce, no feel changes. */
+function keepInside(b: Body, w: number, h: number): boolean {
+  let moved = false;
+  if (b.x - b.r < 0) { b.x = b.r; moved = true; }
+  else if (b.x + b.r > w) { b.x = w - b.r; moved = true; }
+  if (b.y + b.r > h) {
+    b.y = h - b.r;
+    if (b.vy > 0) b.vy = 0;
+    moved = true;
+  }
+  return moved;
+}
+
 function integrate(world: World, dt: number) {
   const { bodies, w, h, gravity } = world;
 
@@ -173,6 +186,19 @@ function integrate(world: World, dt: number) {
       const vt = rvx * -ny + rvy * nx;
       if (!a.held) a.spin = spinClamp(a.spin - vt * 0.0012);
       if (!b.held) b.spin = spinClamp(b.spin - vt * 0.0012);
+    }
+  }
+
+  // Final containment sweep. The separation above can shove any body — a
+  // sleeping one included — out through a wall or the floor, and a sleeping
+  // body never runs the integrator again, so it stayed buried under the box
+  // and looked like it had simply disappeared. Nothing leaves the box.
+  for (const b of bodies) {
+    if (b.held) continue;
+    if (keepInside(b, w, h) && b.asleep) {
+      // It was displaced while asleep: let it settle again from where it is.
+      b.asleep = false;
+      b.still = 0;
     }
   }
 }
