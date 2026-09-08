@@ -15,6 +15,8 @@ export interface Body {
   spin: number;
   restitution: number;
   asleep: boolean;
+  /** consecutive near-motionless steps, used to fall asleep off the floor too */
+  still: number;
   held: boolean;
   kind: string;
   color: string;
@@ -41,6 +43,7 @@ export function makeBody(p: Partial<Body> & Pick<Body, 'x' | 'y' | 'r'>): Body {
     spin: 0,
     restitution: 0.62,
     asleep: false,
+    still: 0,
     held: false,
     kind: 'ball',
     color: '#FF4433',
@@ -56,6 +59,15 @@ export function createWorld(w: number, h: number): World {
 
 const MAX_STEP = 1 / 60;
 
+/**
+ * Hard ceiling on angular velocity, in rad/s. In a narrow box (a phone) bodies
+ * collide many times per frame and every contact used to add spin with nothing
+ * to bound it, so they ended up whirling on the spot. One turn a second is as
+ * fast as a toy should ever look.
+ */
+const MAX_SPIN = 6.5;
+const spinClamp = (v: number) => (v > MAX_SPIN ? MAX_SPIN : v < -MAX_SPIN ? -MAX_SPIN : v);
+
 export function step(world: World, dtRaw: number) {
   // Clamp + subdivide so a stalled tab never explodes the simulation.
   const dt = Math.min(dtRaw, 1 / 20);
@@ -68,7 +80,7 @@ function integrate(world: World, dt: number) {
   const { bodies, w, h, gravity } = world;
 
   for (const b of bodies) {
-    if (b.held) { b.asleep = false; continue; }
+    if (b.held) { b.asleep = false; b.still = 0; continue; }
     if (b.asleep) continue;
 
     b.vy += gravity * dt;
@@ -77,17 +89,27 @@ function integrate(world: World, dt: number) {
     b.x += b.vx * dt;
     b.y += b.vy * dt;
     b.angle += b.spin * dt;
-    b.spin *= 0.985;
+    b.spin *= 0.955;
+    b.spin = spinClamp(b.spin);
+
+    // Under these thresholds a body moves less than a pixel per frame; after
+    // half a second of that it is at rest, wherever it is resting.
+    if (Math.abs(b.vx) < 14 && Math.abs(b.vy) < 58 && Math.abs(b.spin) < 0.3) {
+      if (++b.still > 30) { b.vx = 0; b.vy = 0; b.spin = 0; b.asleep = true; }
+    } else {
+      b.still = 0;
+    }
 
     // Walls
-    if (b.x - b.r < 0) { b.x = b.r; b.vx = -b.vx * b.restitution; b.spin += b.vy * 0.004; }
-    else if (b.x + b.r > w) { b.x = w - b.r; b.vx = -b.vx * b.restitution; b.spin -= b.vy * 0.004; }
+    if (b.x - b.r < 0) { b.x = b.r; b.vx = -b.vx * b.restitution; b.spin = spinClamp(b.spin + b.vy * 0.0012); }
+    else if (b.x + b.r > w) { b.x = w - b.r; b.vx = -b.vx * b.restitution; b.spin = spinClamp(b.spin - b.vy * 0.0012); }
 
     if (b.y + b.r > h) {
       b.y = h - b.r;
       b.vy = -b.vy * b.restitution;
       b.vx *= world.floorFriction;
-      b.spin = b.vx * 0.03;
+      // Rolling contact: the surface speed of the body matches how fast it travels.
+      b.spin = spinClamp(b.vx / b.r);
       if (Math.abs(b.vy) < 42 && Math.abs(b.vx) < 12) {
         b.vy = 0; b.vx *= 0.7;
         if (Math.abs(b.spin) < 0.25) { b.spin = 0; b.asleep = true; }
@@ -97,7 +119,10 @@ function integrate(world: World, dt: number) {
     }
   }
 
-  // Pairwise collisions — body counts stay small (< 60), O(n²) is fine.
+  // Pairwise collisions — body counts stay small (< 30), O(n²) is fine.
+  // Two passes: a single projection cannot untangle a dense pile, and the
+  // leftover overlap pops bodies out again on the next frame.
+  for (let pass = 0; pass < 2; pass++)
   for (let i = 0; i < bodies.length; i++) {
     const a = bodies[i];
     for (let j = i + 1; j < bodies.length; j++) {
@@ -129,12 +154,25 @@ function integrate(world: World, dt: number) {
       const sep = rvx * nx + rvy * ny;
       if (sep > 0) continue;
 
-      const e = Math.min(a.restitution, b.restitution);
+      // A slow approach is a resting contact, not a bounce. Without this,
+      // gravity re-injects velocity every frame and a stack never stops
+      // shuffling.
+      const e = -sep < 80 ? 0 : Math.min(a.restitution, b.restitution);
       const impulse = (-(1 + e) * sep) / inv;
-      if (!a.held) { a.vx -= impulse * nx * ma; a.vy -= impulse * ny * ma; a.asleep = false; }
-      if (!b.held) { b.vx += impulse * nx * mb; b.vy += impulse * ny * mb; b.asleep = false; }
-      a.spin -= impulse * 0.0009;
-      b.spin += impulse * 0.0009;
+      // Only a real knock resets the rest timer. Counting every contact meant a
+      // body in a stack was "woken" 60 times a second and could never sleep.
+      const kickA = impulse * ma;
+      const kickB = impulse * mb;
+      if (!a.held) { a.vx -= impulse * nx * ma; a.vy -= impulse * ny * ma; if (kickA > 30) { a.asleep = false; a.still = 0; } }
+      if (!b.held) { b.vx += impulse * nx * mb; b.vy += impulse * ny * mb; if (kickB > 30) { b.asleep = false; b.still = 0; } }
+      // Spin comes from rolling contact and from being thrown — never from the
+      // normal impulse. Deriving it from the impulse gave every lower-indexed
+      // body a negative kick and every higher-indexed one a positive kick, so
+      // in a crowded box everything saturated and span on the spot forever.
+      // A small tangential term keeps the character without the runaway.
+      const vt = rvx * -ny + rvy * nx;
+      if (!a.held) a.spin = spinClamp(a.spin - vt * 0.0012);
+      if (!b.held) b.spin = spinClamp(b.spin - vt * 0.0012);
     }
   }
 }
@@ -152,8 +190,9 @@ export function bodyAt(world: World, x: number, y: number): Body | null {
 export function wake(world: World, impulse = 900) {
   for (const b of world.bodies) {
     b.asleep = false;
+    b.still = 0;
     b.vx += (Math.random() - 0.5) * impulse;
     b.vy -= Math.random() * impulse;
-    b.spin += (Math.random() - 0.5) * 8;
+    b.spin = spinClamp(b.spin + (Math.random() - 0.5) * 6);
   }
 }

@@ -186,8 +186,6 @@ function ProductDetail({ product, onClose }: { product: Product; onClose: () => 
     <div className="pd" role="dialog" aria-modal="true" aria-label={product.name}>
       <button className="pd-scrim" onClick={onClose} aria-label="Cerrar" data-cursor="press" type="button" />
       <div className="pd-card">
-        <button className="pd-x" onClick={onClose} data-cursor="press" type="button" aria-label="Cerrar">✕</button>
-
         <div
           className="pd-stage"
           ref={stage}
@@ -195,7 +193,7 @@ function ProductDetail({ product, onClose }: { product: Product; onClose: () => 
           data-cursor="drag"
           onPointerDown={(e) => {
             drag.current = { on: true, x: e.clientX, start: turn };
-            (e.currentTarget as Element).setPointerCapture(e.pointerId);
+            try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* no capture available */ }
             play('clack');
           }}
           onPointerMove={(e) => {
@@ -221,6 +219,16 @@ function ProductDetail({ product, onClose }: { product: Product; onClose: () => 
             />
           </div>
           <span className="pd-drag-hint label">ARRASTRA PARA GIRARLO · 360°</span>
+          {/* Lives inside the stage: on a phone the stage is sticky, so the
+              close button stays reachable however far you scroll the sheet. */}
+          <button
+            className="pd-x"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={onClose}
+            data-cursor="press"
+            type="button"
+            aria-label="Cerrar"
+          >✕</button>
         </div>
 
         <div className="pd-meta">

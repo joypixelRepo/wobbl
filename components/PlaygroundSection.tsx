@@ -23,23 +23,27 @@ export default function PlaygroundSection() {
   const spawn = useCallback((n: number, atX?: number, atY?: number) => {
     const w = world.current;
     if (!w) return;
+    // Objects are sized against the box, so a phone gets a handful of chunky
+    // toys instead of a jammed pile that can never settle.
+    const small = w.w < 620;
     for (let i = 0; i < n; i++) {
-      const r = rand(18, 44);
+      const r = small ? rand(16, 32) : rand(18, 44);
       w.bodies.push(makeBody({
         x: atX ?? rand(r, w.w - r),
         y: atY ?? rand(-260, -40),
         r,
         vx: rand(-160, 160),
         vy: rand(0, 120),
-        spin: rand(-6, 6),
+        spin: rand(-2.5, 2.5),
         restitution: rand(.5, .8),
         kind: pick(KINDS),
         color: pick(COLORS),
         accent: pick(COLORS),
       }));
     }
-    // Keep the toy count sane so the section never drops frames.
-    if (w.bodies.length > 46) w.bodies.splice(0, w.bodies.length - 46);
+    // Keep the box from packing so tight that the pile can never come to rest.
+    const cap = Math.max(14, Math.min(40, Math.round((w.w * w.h) / 6000)));
+    if (w.bodies.length > cap) w.bodies.splice(0, w.bodies.length - cap);
     setCount(w.bodies.length);
     play('pop');
   }, []);
@@ -55,7 +59,7 @@ export default function PlaygroundSection() {
       const h = el.clientHeight;
       if (!world.current) {
         world.current = createWorld(w, h);
-        spawn(touch ? 10 : 20);
+        spawn(Math.max(9, Math.min(20, Math.round((w * h) / 9000))));
       } else {
         world.current.w = w;
         world.current.h = h;
@@ -98,7 +102,7 @@ export default function PlaygroundSection() {
     const x = e.clientX - r.left;
     const y = e.clientY - r.top;
     const b = bodyAt(w, x, y);
-    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* no capture available */ }
     if (b) {
       b.held = true;
       b.asleep = false;

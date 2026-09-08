@@ -52,6 +52,14 @@ export function applyPalette(p: Palette | string, instant = false) {
   root.style.setProperty('--d', pal.d);
   root.style.setProperty('--surface', pal.surface);
   root.style.setProperty('--shade', hexA(pal.fg, 0.16));
+
+  // Readable ink for anything painted ON one of the accents. Without this a
+  // pale accent in a dark world (or a dark one in a light world) swallows its
+  // own label — a sticker printed black on black.
+  const INK = '#100C14';
+  const CREAM = '#FFF4E4';
+  ([['a', pal.a], ['b', pal.b], ['c', pal.c], ['d', pal.d], ['surface', pal.surface], ['bg', pal.bg]] as const)
+    .forEach(([k, v]) => root.style.setProperty(`--on-${k}`, isDark(v) ? CREAM : INK));
   if (instant) requestAnimationFrame(() => root.style.removeProperty('transition'));
   current = pal.id;
   subs.forEach((s) => s(pal));

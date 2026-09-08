@@ -121,7 +121,7 @@ export default function BuildSection() {
 
   const onDown = (e: React.PointerEvent, p: Piece) => {
     if (locked[p.id]) return;
-    (e.target as Element).setPointerCapture?.(e.pointerId);
+    try { (e.target as Element).setPointerCapture?.(e.pointerId); } catch { /* no capture available */ }
     const c = toPct(e.clientX, e.clientY);
     grab.current = { dx: pos[p.id].x - c.x, dy: pos[p.id].y - c.y };
     setDragId(p.id);

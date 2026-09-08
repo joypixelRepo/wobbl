@@ -82,7 +82,7 @@ function ToyBoxCard({ product }: { product: Product }) {
           style={{ transform: `perspective(700px) rotateY(${turn}deg) scaleX(${flipped ? -1 : 1})` }}
           onPointerDown={(e) => {
             drag.current = { on: true, x: e.clientX, start: turn };
-            (e.currentTarget as Element).setPointerCapture(e.pointerId);
+            try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* no capture available */ }
             if (touch) setOpen((o) => !o);
           }}
           onPointerMove={(e) => { if (drag.current.on) setTurn(drag.current.start + (e.clientX - drag.current.x) * .8); }}

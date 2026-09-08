@@ -110,7 +110,14 @@ export function Sticker({
   children, rotate = -4, tone = 'c', className = '',
 }: { children: React.ReactNode; rotate?: number; tone?: string; className?: string }) {
   return (
-    <span className={`sticker ${className}`} style={{ ['--rot' as string]: `${rotate}deg`, ['--tone' as string]: `var(--${tone})` }}>
+    <span
+      className={`sticker ${className}`}
+      style={{
+        ['--rot' as string]: `${rotate}deg`,
+        ['--tone' as string]: `var(--${tone})`,
+        ['--on-tone' as string]: `var(--on-${tone})`,
+      }}
+    >
       {children}
     </span>
   );

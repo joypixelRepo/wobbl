@@ -129,8 +129,10 @@ export default function ToyBoxMenu({
                 type="button"
               >
                 <span className="tb-obj"><MenuIcon id={m.id} /></span>
-                <span className="tb-label">{m.label}</span>
-                <span className="tb-hint">{m.hint}</span>
+                <span className="tb-item-text">
+                  <span className="tb-label">{m.label}</span>
+                  <span className="tb-hint">{m.hint}</span>
+                </span>
               </button>
             ))}
           </nav>
