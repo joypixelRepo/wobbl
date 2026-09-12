@@ -60,68 +60,83 @@ export function Dollhouse({ uid, body, accent, extra, look, part, A }: SubProps)
   );
 }
 
-/* ============================= CASTILLO =========================== */
+/* ============================= CASTILLO =========================== *
+ * Torres redondas con tejado cónico, igual que el modelo 3D. Antes
+ * eran dos torres cuadradas de remate plano y no era el mismo castillo
+ * el de la estantería que el de la ficha.
+ * ------------------------------------------------------------------ */
 export function Castle({ uid, body, accent, extra, look, part, A, spin = 0 }: SubProps) {
   const gate = A('gate');
-  const merlons = (x: number, n: number, y: number, w = 12, gap = 18) =>
-    Array.from({ length: n }, (_, i) => <rect key={i} x={x + i * gap} y={y} width={w} height="14" rx="3" fill={body} />);
+
+  const tower = (x: number) => (
+    <g key={x}>
+      {/* fuste, con el degradado que le da la vuelta cilíndrica */}
+      <rect x={x} y="76" width="46" height="96" rx="10" fill={body} />
+      <rect x={x} y="76" width="46" height="96" rx="10" fill={`url(#${uid}-body)`} />
+      <rect x={x + 6} y="80" width="10" height="88" rx="5" fill="rgba(255,255,255,.34)" />
+      {/* saetera */}
+      <rect x={x + 18} y="104" width="10" height="26" rx="5" fill={extra} />
+      <rect x={x + 18} y="104" width="10" height="26" rx="5" fill="none" stroke="rgba(0,0,0,.2)" strokeWidth="2" />
+      {/* moldura y tejado cónico */}
+      <rect x={x - 5} y="68" width="56" height="12" rx="5" fill={accent} />
+      <path d={`M${x - 5} 68 L${x + 23} 18 L${x + 51} 68 Z`} fill={accent} />
+      <path d={`M${x - 5} 68 L${x + 23} 18 L${x + 51} 68 Z`} fill={`url(#${uid}-accent)`} />
+      <path d={`M${x + 23} 18 L${x + 51} 68 L${x + 34} 68 Z`} fill="rgba(0,0,0,.14)" />
+      {/* asta y banderín */}
+      <rect x={x + 21} y="2" width="4" height="20" rx="2" fill="#100C14" opacity=".55" />
+      <path
+        d={`M${x + 25} 4 L${x + 47} 10 L${x + 25} 16 Z`}
+        fill={accent}
+        style={{ transformOrigin: `${x + 25}px 10px`, transform: `scaleX(${0.86 + 0.14 * Math.sin(spin * 0.05)})` }}
+      />
+    </g>
+  );
+
   return (
     <g style={{ transform: `translate(${look.x * 4}px, ${look.y * 3}px)` }}>
-      {/* flags */}
-      {[36, 164].map((x, i) => (
-        <g key={x}>
-          <rect x={x - 2} y="14" width="5" height="34" rx="2.5" fill="#100C14" opacity=".6" />
-          <path
-            d={`M${x + 3} 16 L${x + 30 - i * 60} 24 L${x + 3} 32 Z`}
-            fill={accent}
-            style={{ transformOrigin: `${x + 3}px 24px`, transform: `scaleX(${0.85 + 0.15 * Math.sin(spin * 0.05)})` }}
-          />
-        </g>
-      ))}
+      {/* peana */}
+      <rect x="8" y="168" width="184" height="14" rx="6" fill={extra} />
+      <rect x="8" y="170" width="184" height="5" rx="2.5" fill="rgba(255,255,255,.3)" />
 
-      {/* side towers */}
-      {[16, 144].map((x) => (
-        <g key={x}>
-          <rect x={x} y="62" width="40" height="110" rx="8" fill={body} />
-          <rect x={x} y="62" width="40" height="110" rx="8" fill={`url(#${uid}-body)`} />
-          <rect x={x} y="62" width="40" height="110" rx="8" fill={`url(#${uid}-rim)`} />
-          {merlons(x - 2, 3, 48, 12, 16)}
-          <rect x={x - 4} y="58" width="48" height="10" rx="4" fill={accent} />
-          {/* arrow slit */}
-          <rect x={x + 15} y="84" width="10" height="24" rx="5" fill={extra} />
-          <rect x={x + 15} y="84" width="10" height="24" rx="5" fill="none" stroke="rgba(0,0,0,.2)" strokeWidth="2" />
-        </g>
-      ))}
+      {tower(14)}
+      {tower(140)}
 
-      {/* keep */}
+      {/* cuerpo central */}
       <g {...part('shell')}>
-        <rect x="56" y="86" width="88" height="86" rx="8" fill={body} />
-        <rect x="56" y="86" width="88" height="86" rx="8" fill={`url(#${uid}-body)`} />
-        <rect x="56" y="86" width="88" height="86" rx="8" fill={`url(#${uid}-rim)`} />
-        {merlons(56, 5, 74, 12, 18)}
-        <rect x="52" y="84" width="96" height="10" rx="4" fill={accent} />
+        <rect x="60" y="94" width="80" height="78" rx="8" fill={body} />
+        <rect x="60" y="94" width="80" height="78" rx="8" fill={`url(#${uid}-body)`} />
+        <rect x="60" y="94" width="80" height="78" rx="8" fill={`url(#${uid}-rim)`} />
+        <rect x="56" y="88" width="88" height="11" rx="4" fill={accent} />
       </g>
+      {/* almenas del adarve */}
+      {[62, 80, 98, 116].map((x) => (
+        <rect key={x} x={x} y="74" width="14" height="16" rx="3" fill={body} />
+      ))}
+      <Studs x={70} y={98} n={4} gap={18} />
 
-      {/* portcullis — lifts when poked */}
-      <path d="M78 172v-38a22 22 0 0 1 44 0v38z" fill="rgba(0,0,0,.35)" />
-      <g {...part('gate')} style={{ transform: `translateY(${-gate * 30}px)`, transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
-        <path d="M78 168v-34a22 22 0 0 1 44 0v34z" fill={accent} />
-        <path d="M78 168v-34a22 22 0 0 1 44 0v34z" fill={`url(#${uid}-accent)`} />
-        {[0, 1, 2].map((i) => <rect key={i} x={86 + i * 14} y="118" width="4" height="50" fill="rgba(0,0,0,.28)" />)}
-        {[0, 1].map((i) => <rect key={i} x="78" y={132 + i * 18} width="44" height="4" fill="rgba(0,0,0,.28)" />)}
+      {/* arco y rastrillo */}
+      <path d="M82 172 v-30 a18 18 0 0 1 36 0 v30z" fill="rgba(0,0,0,.34)" />
+      <g {...part('gate')} style={{ transform: `translateY(${-gate * 26}px)`, transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
+        <path d="M84 170 v-28 a16 16 0 0 1 32 0 v28z" fill={accent} />
+        <path d="M84 170 v-28 a16 16 0 0 1 32 0 v28z" fill={`url(#${uid}-accent)`} />
+        {[92, 100, 108].map((x) => <rect key={x} x={x} y="128" width="3.5" height="42" fill="rgba(0,0,0,.3)" />)}
+        {[140, 154].map((y) => <rect key={y} x="84" y={y} width="32" height="3.5" fill="rgba(0,0,0,.3)" />)}
       </g>
-      {/* a knight waiting in the doorway */}
+      {/* el centinela, que asoma al subir el rastrillo */}
       {gate > 0.1 && (
         <g opacity={gate}>
-          <rect x="92" y="146" width="16" height="22" rx="7" fill={extra} />
-          <Eyes cx={100} cy={150} gap={5} r={3.5} look={look} />
+          <rect x="92" y="150" width="16" height="22" rx="7" fill={extra} />
+          <Eyes cx={100} cy={154} gap={5} r={3.5} look={look} />
         </g>
       )}
 
-      {/* battlement windows on the keep */}
-      <circle cx="80" cy="108" r="8" fill={extra} />
-      <circle cx="120" cy="108" r="8" fill={extra} />
-      <Studs x={64} y={90} n={5} gap={18} />
+      {/* ventanas del cuerpo */}
+      {[74, 126].map((cx) => (
+        <g key={cx}>
+          <circle cx={cx} cy="116" r="8" fill={extra} />
+          <circle cx={cx} cy="116" r="8" fill="none" stroke="rgba(0,0,0,.18)" strokeWidth="2" />
+        </g>
+      ))}
     </g>
   );
 }

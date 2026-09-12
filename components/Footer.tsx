@@ -1,14 +1,14 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import ProductShot from '@/components/ProductShot';
+import Toy from '@/components/Toy';
 import { SplitHeading, Sticker, ToyButton, Marquee } from '@/components/ui';
 import { PRODUCTS } from '@/data/catalog';
 import { play, fanfare } from '@/lib/sound';
 import { rand, pick } from '@/lib/hooks';
 import { useShop } from '@/lib/store';
 
-interface Runner { id: number; product: (typeof PRODUCTS)[number]; cw: number; top: number; size: number; dur: number; dir: 1 | -1; delay: number; }
+interface Runner { id: number; kind: (typeof PRODUCTS)[number]['kind']; body: string; accent: string; extra: string; top: number; size: number; dur: number; dir: 1 | -1; delay: number; }
 let rid = 1;
 
 export default function Footer({ onTop }: { onTop: () => void }) {
@@ -21,11 +21,11 @@ export default function Footer({ onTop }: { onTop: () => void }) {
     fanfare();
     const batch: Runner[] = Array.from({ length: 26 }, () => {
       const p = pick(PRODUCTS);
-      const cw = Math.floor(Math.random() * p.colorways.length);
+      const c = pick(p.colorways);
       return {
         id: rid++,
-        product: p,
-        cw,
+        kind: p.kind,
+        body: c.body, accent: c.accent, extra: c.extra,
         top: rand(2, 90),
         size: rand(60, 190),
         dur: rand(2.4, 5),
@@ -124,9 +124,9 @@ export default function Footer({ onTop }: { onTop: () => void }) {
               className={`parade-toy ${r.dir === 1 ? 'ltr' : 'rtl'}`}
               style={{ top: `${r.top}%`, width: r.size, animationDuration: `${r.dur}s`, animationDelay: `${r.delay}s` }}
               data-cursor="view"
-              onClick={() => openSheet(r.product.id)}
+              onClick={() => openSheet(r.kind)}
             >
-              <ProductShot product={r.product} colorway={r.cw} sizes="190px" />
+              <Toy kind={r.kind} body={r.body} accent={r.accent} extra={r.extra} shadow={false} />
             </span>
           ))}
         </div>

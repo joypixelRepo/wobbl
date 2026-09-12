@@ -3,54 +3,55 @@
 import { Eyes, Wheel, Studs, type SubProps } from './kit';
 
 /* ============================ AVIONETA ============================ *
- * Fuselaje de una sola pieza, morro a la izquierda y cola pegada al
- * cuerpo: cada añadido tiene que solaparse con la silueta o se lee
- * como una pieza suelta flotando.
+ * Ala baja, deriva trasera y hélice en el morro, como el modelo 3D.
+ * La versión anterior era un avión panzudo con la cabina del tamaño de
+ * media cabina: no era el mismo aparato que se veía en la ficha.
  * ------------------------------------------------------------------ */
 export function Plane({ uid, body, accent, extra, look, part, A, spin = 0 }: SubProps) {
   const prop = spin * 6 + A('prop') * 1440;
+  const fuselage = 'M26 108 q0 -9 12 -11 l34 -6 q20 -15 46 -15 h14 q22 0 33 17 l9 13 q4 7 -3 11 l-13 6 q-13 9 -33 9 H72 q-20 0 -34 -9 q-12 -5 -12 -15z';
+
   return (
     <g style={{ transform: `translate(${look.x * 6}px, ${look.y * 4}px) rotate(${look.x * 3}deg)`, transformOrigin: '100px 110px' }}>
-      {/* tail fin, rooted in the fuselage */}
-      <path d="M138 104 L160 44 L178 46 L176 110 Z" fill={accent} />
-      <path d="M138 104 L160 44 L178 46 L176 110 Z" fill={`url(#${uid}-accent)`} />
-      <path d="M160 96 L196 90 L196 104 L162 106 Z" fill={accent} opacity=".75" />
+      {/* deriva y estabilizador, nacidos del fuselaje */}
+      <path d="M40 100 L22 48 L40 46 L62 98 Z" fill={accent} />
+      <path d="M40 100 L22 48 L40 46 L62 98 Z" fill={`url(#${uid}-accent)`} />
+      <path d="M14 102 h44 v12 H18 Z" fill={accent} opacity=".85" />
 
-      {/* fuselage */}
+      {/* fuselaje */}
       <g {...part('shell')}>
-        <path d="M46 108c0-16 14-26 34-26h74c16 0 26 10 26 24 0 16-10 26-28 26H74c-16 0-28-10-28-24z" fill={body} />
-        <path d="M46 108c0-16 14-26 34-26h74c16 0 26 10 26 24 0 16-10 26-28 26H74c-16 0-28-10-28-24z" fill={`url(#${uid}-body)`} />
-        <path d="M46 108c0-16 14-26 34-26h74c16 0 26 10 26 24 0 16-10 26-28 26H74c-16 0-28-10-28-24z" fill={`url(#${uid}-rim)`} />
+        <path d={fuselage} fill={body} />
+        <path d={fuselage} fill={`url(#${uid}-body)`} />
+        <path d={fuselage} fill={`url(#${uid}-rim)`} />
       </g>
-      {/* nose cone */}
-      <path d="M46 108c0-14 10-24 24-26v52c-14-2-24-12-24-26z" fill={accent} />
-      <path d="M46 108c0-14 10-24 24-26v52c-14-2-24-12-24-26z" fill={`url(#${uid}-accent)`} />
 
-      {/* canopy, overlapping the fuselage */}
-      <path d="M82 84c5-16 17-25 31-25s23 9 26 25z" fill={extra} />
-      <path d="M82 84c5-16 17-25 31-25s23 9 26 25z" fill={`url(#${uid}-rim)`} />
-      <path d="M82 84c5-16 17-25 31-25s23 9 26 25z" fill="none" stroke="rgba(0,0,0,.24)" strokeWidth="3" />
-      <Eyes cx={111} cy={72} gap={12} r={7} look={look} />
+      {/* cabina, hundida en el lomo */}
+      <rect x="84" y="80" width="44" height="18" rx="8" fill={accent} />
+      <rect x="88" y="83" width="36" height="8" rx="4" fill={extra} opacity=".9" />
+      <rect x="88" y="83" width="36" height="8" rx="4" fill="none" stroke="rgba(0,0,0,.18)" strokeWidth="2" />
 
-      {/* wing, swept and sticking out past the body on both sides */}
-      <path d="M22 128h158c8 0 12 5 12 11s-4 11-12 11H22c-9 0-15-5-15-11s6-11 15-11z" fill={accent} />
-      <path d="M22 132h158v5H22z" fill="rgba(255,255,255,.45)" />
-      <Studs x={46} y={130} n={7} gap={20} rx={7} ry={3} />
+      {/* ala baja, que cruza por delante del fuselaje */}
+      <path d="M44 120 h104 q12 0 12 9 q0 9 -12 9 H44 q-13 0 -13 -9 q0 -9 13 -9z" fill={body} />
+      <path d="M44 122 h104 v5 H44z" fill="rgba(255,255,255,.4)" />
+      <Studs x={62} y={124} n={5} gap={18} rx={6} ry={3} />
+      {/* punta de ala */}
+      <rect x="140" y="118" width="24" height="13" rx="6" fill={accent} />
 
-      {/* propeller, right on the nose */}
-      <g style={{ transform: `rotate(${prop}deg)`, transformOrigin: '40px 108px', transition: A('prop') ? 'transform 1.6s cubic-bezier(.15,.9,.2,1)' : 'none' }} {...part('prop')}>
-        <rect x="33" y="66" width="14" height="84" rx="7" fill="#100C14" opacity=".78" />
-        <rect x="36" y="70" width="5" height="76" rx="2.5" fill="rgba(255,255,255,.32)" />
+      {/* hélice en el morro */}
+      <g style={{ transform: `rotate(${prop}deg)`, transformOrigin: '174px 110px', transition: A('prop') ? 'transform 1.6s cubic-bezier(.15,.9,.2,1)' : 'none' }} {...part('prop')}>
+        <rect x="167" y="58" width="14" height="104" rx="7" fill="#26232c" />
+        <rect x="170" y="62" width="5" height="96" rx="2.5" fill="rgba(255,255,255,.28)" />
       </g>
-      <circle cx="40" cy="108" r="11" fill={body} />
-      <circle cx="40" cy="108" r="11" fill={`url(#${uid}-body)`} />
-      <circle cx="37" cy="104" r="3.5" fill="#fff" opacity=".6" />
+      <circle cx="174" cy="110" r="10" fill={body} />
+      <circle cx="174" cy="110" r="10" fill={`url(#${uid}-body)`} />
+      <circle cx="171" cy="106" r="3.5" fill="#fff" opacity=".6" />
 
-      {/* landing gear */}
-      <rect x="72" y="148" width="8" height="12" rx="4" fill="#100C14" />
-      <rect x="128" y="148" width="8" height="12" rx="4" fill="#100C14" />
-      <Wheel uid={uid} cx={76} cy={166} r={13} hub={body} roll={spin * 2} />
-      <Wheel uid={uid} cx={132} cy={166} r={13} hub={body} roll={spin * 2} />
+      {/* tren de aterrizaje */}
+      <rect x="82" y="136" width="7" height="12" rx="3.5" fill="#100C14" />
+      <rect x="124" y="136" width="7" height="12" rx="3.5" fill="#100C14" />
+      <Wheel uid={uid} cx={85} cy={158} r={13} hub={accent} roll={spin * 2} />
+      <Wheel uid={uid} cx={127} cy={158} r={13} hub={accent} roll={spin * 2} />
+      <Wheel uid={uid} cx={34} cy={130} r={8} hub={accent} />
     </g>
   );
 }
@@ -471,10 +472,10 @@ export function Bus({ uid, body, accent, extra, look, part, A, spin = 0 }: SubPr
   return (
     <g style={{ transform: `translate(${look.x * 5}px, ${look.y * 3}px)` }}>
       {/* señal de stop abatible, en el costado */}
-      <g style={{ transform: `rotate(${-70 + door * 70}deg)`, transformOrigin: '18px 106px', transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
-        <rect x="4" y="102" width="18" height="8" rx="4" fill="#100C14" opacity=".6" />
-        <path d="M-14 98 l8-8 h11 l8 8 v11 l-8 8 h-11 l-8-8z" fill={accent} />
-        <path d="M-14 98 l8-8 h11 l8 8 v11 l-8 8 h-11 l-8-8z" fill={`url(#${uid}-accent)`} />
+      <g style={{ transform: `rotate(${-70 + door * 70}deg)`, transformOrigin: '26px 106px', transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
+        <rect x="14" y="102" width="16" height="8" rx="4" fill="#100C14" opacity=".6" />
+        <path d="M2 99 l7-7 h9 l7 7 v9 l-7 7 h-9 l-7-7z" fill={accent} />
+        <path d="M2 99 l7-7 h9 l7 7 v9 l-7 7 h-9 l-7-7z" fill={`url(#${uid}-accent)`} />
       </g>
 
       {/* baca */}

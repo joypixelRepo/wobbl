@@ -67,8 +67,8 @@ export function Bot({ uid, body, accent, extra, look, part, A }: SubProps) {
         <rect x="56" y="20" width="88" height="60" rx="26" fill={accent} />
         <rect x="56" y="20" width="88" height="60" rx="26" fill={`url(#${uid}-accent)`} />
         {/* antenna */}
-        <rect x="97" y="4" width="6" height="18" rx="3" fill={extra} />
-        <circle cx="100" cy="6" r="8" fill={body} className="toy-bob" />
+        <rect x="97" y="12" width="6" height="14" rx="3" fill={extra} />
+        <circle cx="100" cy="14" r="7" fill={body} className="toy-bob" />
         {/* screen face */}
         <rect x="68" y="34" width="64" height="34" rx="14" fill="rgba(16,12,20,.86)" />
         <Eyes cx={100} cy={51} gap={14} r={7} look={look} ink="#FFF4E4" />
@@ -184,110 +184,204 @@ export function Blob({ uid, body, accent, look, part, A }: SubProps) {
   );
 }
 
-/* --------------------------- ZIP VELOZ ---------------------------- */
+/* ------------------------ COCHE DE CARRERAS ------------------------ *
+ * Monoplaza de ruedas descubiertas, igual que el modelo 3D. Antes era
+ * un utilitario cerrado y en la ficha aparecía un coche distinto del
+ * que se veía en la estantería.
+ * ------------------------------------------------------------------ */
 export function Racer({ uid, body, accent, extra, look, part, A, spin = 0 }: SubProps) {
   const roll = spin + A('wheel') * 720;
-  const shell = 'M34 128c0-16 10-26 26-30l16-22c5-7 12-10 20-10h20c10 0 18 6 22 15l9 20c12 4 20 14 20 27 0 10-8 18-18 18H50c-9 0-16-8-16-18z';
+  const shell = 'M30 150 q-8 -2 -8 -12 l0 -22 q0 -14 14 -18 l38 -8 q8 -12 22 -12 h18 q12 0 16 12 l50 8 q16 4 16 14 q0 10 -14 12 l-46 4 q-6 12 -22 12 h-26 q-14 0 -20 -10z';
+  const pod = 'M74 124 h56 q10 0 10 10 v14 q0 10 -10 10 h-56 q-10 0 -10 -10 v-14 q0 -10 10 -10z';
+
   return (
     <g style={{ transform: `translate(${look.x * 6}px, ${look.y * 3}px)` }}>
+      {/* alerón trasero sobre dos pilones */}
+      <g>
+        <rect x="12" y="90" width="46" height="11" rx="4" fill={accent} transform="rotate(-7 35 96)" />
+        <rect x="18" y="104" width="36" height="8" rx="3" fill={accent} transform="rotate(-7 36 108)" />
+        {[14, 52].map((x) => (
+          <rect key={x} x={x} y="88" width="7" height="30" rx="3" fill={accent} />
+        ))}
+        <rect x="30" y="112" width="12" height="26" rx="5" fill={body} />
+      </g>
+
+      {/* chasis */}
       <g {...part('shell')}>
         <path d={shell} fill={body} />
         <path d={shell} fill={`url(#${uid}-body)`} />
-        {/* windscreen */}
-        <path d="M82 74c3-5 8-8 14-8h16c7 0 12 4 15 11l6 15H72z" fill={extra} opacity=".9" />
-        <path d="M82 74c3-5 8-8 14-8h16c7 0 12 4 15 11l6 15H72z" fill={`url(#${uid}-rim)`} />
-        {/* racing stripe */}
-        <rect x="94" y="98" width="14" height="48" rx="4" fill={accent} />
-        {/* spoiler */}
-        <rect x="140" y="86" width="30" height="9" rx="4" fill={accent} />
-        <rect x="152" y="92" width="7" height="16" rx="3" fill={accent} />
-        {/* headlight */}
-        <ellipse cx="42" cy="112" rx="9" ry="7" fill={accent} />
+        <path d={shell} fill={`url(#${uid}-rim)`} />
       </g>
-      {[66, 138].map((cx) => (
-        <g key={cx} {...part('wheel')}>
-          <Wheel uid={uid} cx={cx} cy={150} r={24} hub={accent} roll={roll} smooth={!!A('wheel')} />
-        </g>
-      ))}
-    </g>
-  );
-}
 
-/* -------------------------- PLANETA PUZLE ------------------------- */
-export function Planet({ uid, body, accent, extra, look, part, A, spin = 0 }: SubProps) {
-  const open = A('open');
-  return (
-    <g style={{ transform: `translate(${look.x * 5}px, ${look.y * 4}px)` }}>
-      {/* ring */}
-      <g style={{ transform: `rotate(${-18 + spin * 0.15}deg)`, transformOrigin: '100px 100px' }}>
-        <ellipse cx="100" cy="100" rx="88" ry="26" fill="none" stroke={accent} strokeWidth="9" opacity=".92" />
-        <ellipse cx="100" cy="100" rx="88" ry="26" fill="none" stroke="rgba(255,255,255,.4)" strokeWidth="3" />
-      </g>
-      <g {...part('open')}>
-        {/* left half — separates on click */}
-        <g style={{ transform: `translateX(${-open * 26}px) rotate(${-open * 10}deg)`, transformOrigin: '100px 100px', transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
-          <path d="M100 32a68 68 0 0 0 0 136z" fill={body} />
-          <path d="M100 32a68 68 0 0 0 0 136z" fill={`url(#${uid}-body)`} />
-          <path d="M78 52 Q60 78 66 108" stroke={extra} strokeWidth="7" fill="none" strokeLinecap="round" opacity=".85" />
-          <circle cx="62" cy="128" r="10" fill={extra} opacity=".85" />
-        </g>
-        {/* right half */}
-        <g style={{ transform: `translateX(${open * 26}px) rotate(${open * 10}deg)`, transformOrigin: '100px 100px', transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
-          <path d="M100 32a68 68 0 0 1 0 136z" fill={body} />
-          <path d="M100 32a68 68 0 0 1 0 136z" fill={`url(#${uid}-body)`} />
-          <circle cx="128" cy="72" r="14" fill={accent} />
-          <path d="M120 132 Q140 120 146 96" stroke={extra} strokeWidth="7" fill="none" strokeLinecap="round" opacity=".85" />
-        </g>
-        {/* seam */}
-        <rect x="97.5" y="32" width="5" height="136" rx="2.5" fill="rgba(0,0,0,.2)" opacity={1 - open} />
-      </g>
-      {/* core revealed when open */}
-      <circle cx="100" cy="100" r={open * 18} fill={accent} opacity={open} />
-      <ellipse cx="100" cy="100" rx="88" ry="26" fill="none" stroke="rgba(0,0,0,.18)" strokeWidth="2" transform="rotate(-18 100 100)" />
-    </g>
-  );
-}
+      {/* pontón lateral con su boca de refrigeración */}
+      <path d={pod} fill={body} />
+      <path d={pod} fill={`url(#${uid}-rim)`} />
+      <rect x="126" y="130" width="12" height="20" rx="5" fill="#141219" opacity=".8" />
 
-/* --------------------------- CAJA DE RUIDO ------------------------ */
-export function Noise({ uid, body, accent, extra, look, part, A }: SubProps) {
-  const keys = [
-    { x: 44, id: 'k0', fill: accent },
-    { x: 76, id: 'k1', fill: extra },
-    { x: 108, id: 'k2', fill: accent },
-    { x: 140, id: 'k3', fill: extra },
-  ];
-  return (
-    <g style={{ transform: `translate(${look.x * 4}px, ${look.y * 3}px)` }}>
-      {/* horn */}
-      <g {...part('horn')} style={{ transform: `scale(${1 + A('horn') * 0.12})`, transformOrigin: '150px 56px', transition: 'transform .35s cubic-bezier(.34,1.8,.44,1)' }}>
-        <path d="M128 66 L166 40 L172 88 Z" fill={accent} />
-        <path d="M128 66 L166 40 L172 88 Z" fill={`url(#${uid}-accent)`} />
-        {A('horn') > 0 && [1, 2, 3].map((i) => (
-          <path key={i} d={`M${176 + i * 8} ${58 - i * 4} q6 ${8 + i * 3} 0 ${16 + i * 6}`} stroke={accent} strokeWidth="3.5" fill="none" strokeLinecap="round" opacity={0.9 - i * 0.22} className="toy-ping" />
+      {/* franja central y dorsal */}
+      <rect x="86" y="120" width="60" height="7" rx="3" fill={accent} />
+      <circle cx="52" cy="126" r="10" fill="#f4f1ea" />
+      <circle cx="52" cy="126" r="10" fill={`url(#${uid}-rim)`} />
+
+      {/* bañera: arco antivuelco, casco y parabrisas */}
+      <path d="M74 118 q6 -22 24 -22 q18 0 24 22z" fill={body} />
+      <circle cx="98" cy="106" r="15" fill={extra} />
+      <circle cx="98" cy="106" r="15" fill={`url(#${uid}-extra)`} />
+      <path d="M84 104 a15 15 0 0 1 28 -4 l-28 8z" fill="#15131a" opacity=".85" />
+      <path d="M116 110 q10 2 12 10" stroke={extra} strokeWidth="5" fill="none" strokeLinecap="round" opacity=".9" />
+
+      {/* morro y alerón delantero */}
+      <path d="M150 136 h30 q8 0 8 6 q0 6 -8 6 h-30z" fill={accent} />
+      <g>
+        <rect x="156" y="158" width="40" height="9" rx="4" fill={accent} transform="rotate(4 176 162)" />
+        {[156, 188].map((x) => (
+          <rect key={x} x={x} y="146" width="8" height="22" rx="3" fill={accent} />
         ))}
       </g>
-      {/* box */}
+
+      {/* escape */}
+      <rect x="18" y="126" width="16" height="8" rx="4" fill="#c9ccd4" />
+
+      {/* ruedas descubiertas: traseras más grandes */}
+      <g {...part('wheel')}>
+        {([[56, 148, 30], [152, 152, 25]] as const).map(([cx, cy, r]) => (
+          <g key={cx} style={{ transform: `rotate(${roll * (r > 27 ? 1 : 1.2)}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: A('wheel') ? 'transform 1.4s cubic-bezier(.2,.8,.2,1)' : 'none' }}>
+            <circle cx={cx} cy={cy} r={r} fill="#1b191f" />
+            <circle cx={cx} cy={cy} r={r * 0.56} fill={accent} />
+            <circle cx={cx} cy={cy} r={r * 0.56} fill={`url(#${uid}-accent)`} />
+            <circle cx={cx} cy={cy} r={r * 0.16} fill="#e8eaf0" />
+            {[0, 60, 120].map((a) => (
+              <rect key={a} x={cx - r * 0.07} y={cy - r * 0.58} width={r * 0.14} height={r * 1.16} rx={r * 0.07} fill="rgba(0,0,0,.35)" transform={`rotate(${a} ${cx} ${cy})`} />
+            ))}
+          </g>
+        ))}
+      </g>
+    </g>
+  );
+}
+
+/* -------------------------- PUZLE ESFÉRICO ------------------------ *
+ * Esfera con casquete de otro color, gajos tallados y anillo, como el
+ * modelo 3D. Antes eran dos mitades lisas con garabatos encima: no era
+ * la misma pieza.
+ * ------------------------------------------------------------------ */
+export function Planet({ uid, body, accent, extra, look, part, A, spin = 0 }: SubProps) {
+  const open = A('open');
+  const R = 68;
+
+  return (
+    <g style={{ transform: `translate(${look.x * 5}px, ${look.y * 4}px)` }}>
+      {/* mitad del anillo que pasa por detrás */}
+      <g style={{ transform: `rotate(${-18 + spin * 0.15}deg)`, transformOrigin: '100px 100px' }}>
+        <path d="M12 100a88 26 0 0 1 176 0" fill="none" stroke={accent} strokeWidth="9" />
+      </g>
+
+      <g {...part('open')}>
+        {/* esfera */}
+        <g style={{ transform: `translateX(${-open * 24}px)`, transformOrigin: '100px 100px', transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
+          <path d={`M100 ${100 - R}a${R} ${R} 0 0 0 0 ${R * 2}z`} fill={body} />
+          <path d={`M100 ${100 - R}a${R} ${R} 0 0 0 0 ${R * 2}z`} fill={`url(#${uid}-body)`} />
+        </g>
+        <g style={{ transform: `translateX(${open * 24}px)`, transformOrigin: '100px 100px', transition: 'transform .6s cubic-bezier(.34,1.8,.44,1)' }}>
+          <path d={`M100 ${100 - R}a${R} ${R} 0 0 1 0 ${R * 2}z`} fill={body} />
+          <path d={`M100 ${100 - R}a${R} ${R} 0 0 1 0 ${R * 2}z`} fill={`url(#${uid}-body)`} />
+        </g>
+
+        {/* casquetes polares, en otro color: marcan por dónde abre */}
+        <path d={`M${100 - R * 0.72} ${100 - R * 0.69} a${R} ${R} 0 0 1 ${R * 1.44} 0z`} fill={accent} opacity={1 - open * 0.8} />
+        <path d={`M${100 - R * 0.6} ${100 + R * 0.8} a${R} ${R} 0 0 0 ${R * 1.2} 0z`} fill={extra} opacity={1 - open * 0.8} />
+
+        {/* gajos tallados: meridianos hundidos, no pintados encima */}
+        {[0.30, 0.60, 0.86].map((k) => (
+          <g key={k} opacity={0.5 - open * 0.4}>
+            <path d={`M100 32 a${R * k} ${R} 0 0 0 0 136`} fill="none" stroke="#000" strokeOpacity=".28" strokeWidth="2.5" />
+            <path d={`M100 32 a${R * k} ${R} 0 0 1 0 136`} fill="none" stroke="#000" strokeOpacity=".28" strokeWidth="2.5" />
+          </g>
+        ))}
+        {/* paralelos */}
+        {[-30, 30].map((dy) => {
+          const rx = Math.sqrt(Math.max(R * R - dy * dy, 1));
+          return <ellipse key={dy} cx="100" cy={100 + dy} rx={rx} ry={rx * 0.16} fill="none" stroke="#000" strokeOpacity=".22" strokeWidth="2.5" opacity={1 - open} />;
+        })}
+
+        {/* brillo de vidrio */}
+        <ellipse cx="74" cy="70" rx="20" ry="14" fill="#fff" opacity=".42" transform="rotate(-26 74 70)" />
+      </g>
+
+      {/* núcleo, al separarse las mitades */}
+      <circle cx="100" cy="100" r={open * 17} fill={accent} opacity={open} />
+
+      {/* mitad del anillo que pasa por delante */}
+      <g style={{ transform: `rotate(${-18 + spin * 0.15}deg)`, transformOrigin: '100px 100px' }}>
+        <path d="M12 100a88 26 0 0 0 176 0" fill="none" stroke={accent} strokeWidth="9" />
+        <path d="M12 100a88 26 0 0 0 176 0" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="3" />
+      </g>
+    </g>
+  );
+}
+
+/* ----------------------------- ORGANILLO -------------------------- *
+ * Caja, bocina acampanada y manivela, como el modelo 3D. La versión
+ * anterior no tenía manivela y se leía como un altavoz.
+ * ------------------------------------------------------------------ */
+export function Noise({ uid, body, accent, extra, look, part, A, spin = 0 }: SubProps) {
+  const keys = [
+    { x: 46, id: 'k0', fill: accent },
+    { x: 74, id: 'k1', fill: extra },
+    { x: 102, id: 'k2', fill: accent },
+    { x: 130, id: 'k3', fill: extra },
+  ];
+  const crank = spin * 1.2 + A('horn') * 360;
+
+  return (
+    <g style={{ transform: `translate(${look.x * 4}px, ${look.y * 3}px)` }}>
+      {/* bocina acampanada: dos curvas y una boca elíptica */}
+      <g {...part('horn')} style={{ transform: `scale(${1 + A('horn') * 0.08})`, transformOrigin: '150px 54px', transition: 'transform .35s cubic-bezier(.34,1.8,.44,1)' }}>
+        <path d="M132 82 q4 -34 26 -52 q10 -8 18 -10 l10 26 q-10 4 -16 14 q-10 16 -10 30z" fill={accent} />
+        <path d="M132 82 q4 -34 26 -52 q10 -8 18 -10 l10 26 q-10 4 -16 14 q-10 16 -10 30z" fill={`url(#${uid}-accent)`} />
+        <ellipse cx="181" cy="33" rx="9" ry="15" fill={extra} transform="rotate(24 181 33)" />
+        <ellipse cx="181" cy="33" rx="9" ry="15" fill="none" stroke="rgba(0,0,0,.2)" strokeWidth="2.5" transform="rotate(24 181 33)" />
+        {A('horn') > 0 && [1, 2].map((i) => (
+          <path key={i} d={`M${190 + i * 7} ${26 - i * 3} q6 ${8 + i * 3} 0 ${15 + i * 4}`} stroke={accent} strokeWidth="3.5" fill="none" strokeLinecap="round" opacity={0.85 - i * 0.3} className="toy-ping" />
+        ))}
+      </g>
+
+      {/* caja */}
       <g {...part('box')}>
-        <rect x="30" y="62" width="112" height="86" rx="20" fill={body} />
-        <rect x="30" y="62" width="112" height="86" rx="20" fill={`url(#${uid}-body)`} />
-        <rect x="30" y="62" width="112" height="86" rx="20" fill={`url(#${uid}-rim)`} />
-        {/* speaker grille */}
-        <g opacity=".28">
+        <rect x="26" y="74" width="116" height="80" rx="18" fill={body} />
+        <rect x="26" y="74" width="116" height="80" rx="18" fill={`url(#${uid}-body)`} />
+        <rect x="26" y="74" width="116" height="80" rx="18" fill={`url(#${uid}-rim)`} />
+        {/* tapa */}
+        <rect x="22" y="66" width="124" height="14" rx="7" fill={accent} />
+        <rect x="22" y="68" width="124" height="4" rx="2" fill="rgba(255,255,255,.35)" />
+        {/* rejilla */}
+        <g opacity=".3">
           {[0, 1, 2].map((r) => [0, 1, 2, 3].map((c) => (
-            <circle key={`${r}-${c}`} cx={48 + c * 12} cy={78 + r * 11} r="3" fill="#000" />
+            <circle key={`${r}-${c}`} cx={46 + c * 12} cy={96 + r * 11} r="3" fill="#000" />
           )))}
         </g>
+        {/* piloto */}
+        <circle cx="124" cy="96" r="7" fill={accent} />
+        <circle cx="124" cy="96" r="7" fill={`url(#${uid}-accent)`} />
       </g>
-      {/* keys */}
+
+      {/* manivela: es lo que dice "organillo" y no "altavoz" */}
+      <g style={{ transform: `rotate(${crank}deg)`, transformOrigin: '18px 118px' }}>
+        <rect x="10" y="114" width="18" height="8" rx="4" fill="#c9ccd4" />
+        <rect x="4" y="98" width="8" height="22" rx="4" fill="#c9ccd4" />
+        <circle cx="8" cy="96" r="9" fill={accent} />
+        <circle cx="8" cy="96" r="9" fill={`url(#${uid}-accent)`} />
+      </g>
+      <circle cx="18" cy="118" r="6" fill="#8e929b" />
+
+      {/* teclas */}
       {keys.map((k) => (
         <g key={k.id} {...part(k.id)} style={{ transform: `translateY(${A(k.id) * 6}px)`, transition: 'transform .18s ease-out' }}>
-          <rect x={k.x} y="126" width="26" height="26" rx="9" fill="rgba(0,0,0,.22)" />
-          <rect x={k.x} y="122" width="26" height="26" rx="9" fill={k.fill} />
-          <rect x={k.x + 4} y="126" width="18" height="6" rx="3" fill="rgba(255,255,255,.42)" />
+          <rect x={k.x} y="160" width="24" height="22" rx="8" fill="rgba(0,0,0,.22)" />
+          <rect x={k.x} y="156" width="24" height="22" rx="8" fill={k.fill} />
+          <rect x={k.x + 4} y="160" width="16" height="6" rx="3" fill="rgba(255,255,255,.42)" />
         </g>
       ))}
-      {/* handle */}
-      <path d="M56 62 q30 -34 60 0" stroke={extra} strokeWidth="10" fill="none" strokeLinecap="round" />
     </g>
   );
 }

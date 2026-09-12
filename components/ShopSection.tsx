@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
-import ProductShot from '@/components/ProductShot';
+import Toy from '@/components/Toy';
 import { SplitHeading, Sticker, ToyButton } from '@/components/ui';
 import { CATEGORIES, PRODUCTS, type CategoryId, type Product } from '@/data/catalog';
 import { useShop } from '@/lib/store';
@@ -116,12 +116,15 @@ function ToyBoxCard({ product, onOpen }: { product: Product; onOpen: () => void 
         </span>
         <span className="tbx-back" aria-hidden />
 
+        {/* Sin giro por arrastre: un dibujo plano girado en rotateY acaba
+            de canto y desaparece. El clic abre la ficha, que es donde el
+            producto se gira de verdad. */}
         <div
           className="tbx-toy"
           data-cursor="view"
           onClick={() => { if (touch) setOpen(true); onOpen(); }}
         >
-          <ProductShot product={product} colorway={cw} />
+          <Toy kind={product.kind} body={c.body} accent={c.accent} extra={c.extra} look={{ x: open ? .4 : 0, y: open ? -.2 : 0 }} shadow={false} />
         </div>
 
         <span className="tbx-tag" aria-hidden>

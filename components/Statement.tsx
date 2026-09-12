@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import ProductShot from '@/components/ProductShot';
+import Toy from '@/components/Toy';
 import { SplitHeading } from '@/components/ui';
+import type { ToyKind } from '@/data/catalog';
 import { useShop } from '@/lib/store';
 
 /**
@@ -11,11 +12,10 @@ import { useShop } from '@/lib/store';
  * moving for a moment — one object, one sentence, a lot of air.
  */
 export default function Statement({
-  id, line1, line2, copy, product, colorway = 0, palette,
+  id, line1, line2, copy, kind, palette, body, accent, extra,
 }: {
   id: string; line1: string; line2: string; copy: string;
-  /** id de producto del catálogo: sale con su ficha 3D horneada */
-  product: string; colorway?: number; palette: string;
+  kind: ToyKind; palette: string; body: string; accent: string; extra: string;
 }) {
   const root = useRef<HTMLElement>(null);
   const { openSheet } = useShop();
@@ -34,8 +34,8 @@ export default function Statement({
     <section id={id} className="scene statement" data-palette={palette} ref={root}>
       <div className="stm-inner">
         <SplitHeading text={line1} className="t-mega stm-l1" />
-        <div className="stm-toy" data-cursor="view" onClick={() => openSheet(product)}>
-          <ProductShot product={product} colorway={colorway} sizes="(max-width: 860px) 62vw, 260px" />
+        <div className="stm-toy" data-cursor="view" onClick={() => openSheet(kind)}>
+          <Toy kind={kind} body={body} accent={accent} extra={extra} look={{ x: 0, y: 0 }} />
         </div>
         <SplitHeading text={line2} className="t-mega stm-l2" sticker />
       </div>
