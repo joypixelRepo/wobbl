@@ -40,7 +40,7 @@ export default function Footer({ onTop }: { onTop: () => void }) {
   return (
     <footer id="footer" className="footer" data-palette="ink">
       <Marquee
-        items={['NUNCA DEJES DE JUGAR', 'NO ES SOLO UN JUGUETE', 'IMAGINACIÓN ENORME', 'HECHO PARA ROMPERSE', 'JUGAR NO TIENE REGLAS']}
+        items={['NUNCA DEJES DE JUGAR', 'SOPLADO A MANO', 'IMAGINACIÓN ENORME', 'NO HAY DOS IGUALES', 'JUGAR NO TIENE REGLAS']}
         speed={44}
         className="footer-mq"
       />
@@ -62,7 +62,7 @@ export default function Footer({ onTop }: { onTop: () => void }) {
         <div className="footer-grid">
           <div className="footer-col">
             <span className="label footer-col-h">NEWSLETTER</span>
-            <p className="footer-copy">Un email al mes. Novedades, fotos de la fábrica y nada de ruido.</p>
+            <p className="footer-copy">Un email al mes. Piezas nuevas, fotos del horno y nada de ruido.</p>
             <form
               className="footer-form"
               onSubmit={(e) => { e.preventDefault(); if (email.current?.value) { play('snap'); setSent(true); } }}
@@ -109,7 +109,7 @@ export default function Footer({ onTop }: { onTop: () => void }) {
         <div className="footer-bottom">
           <div className="footer-mark">
             <span className="footer-logo">WOBBL<i>.</i></span>
-            <span className="footer-legal">© {new Date().getFullYear()} WOBBL JUGUETES SL · Marca ficticia, hecha como patio de juegos.</span>
+            <span className="footer-legal">© {new Date().getFullYear()} WOBBL VIDRIO SL · Marca ficticia, hecha como patio de juegos.</span>
           </div>
           <ToyButton size="sm" tone="surface" onClick={onTop} cursor="press">VOLVER ARRIBA ↑</ToyButton>
         </div>

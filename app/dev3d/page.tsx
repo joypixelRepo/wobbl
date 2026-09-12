@@ -9,6 +9,7 @@ import { ProductStage } from '@/components/three/ProductStage';
 import { MODELS } from '@/components/three/models';
 import { PRODUCTS, type ToyKind } from '@/data/catalog';
 
+
 function Cell({ kind }: { kind: ToyKind }) {
   const product = PRODUCTS.find((p) => p.kind === kind)!;
   const c = product.colorways[0];
@@ -40,7 +41,7 @@ function Grid() {
     return (
       <div style={{ height: '100vh', background: '#efeae1' }}>
         <Canvas shadows dpr={[1, 2]} gl={{ ...GL_SETTINGS, preserveDrawingBuffer: true }}>
-          <ProductStage>
+        <ProductStage>
             <Model body={c.body} accent={c.accent} extra={c.extra} spin={0} />
           </ProductStage>
           <OrbitControls makeDefault enablePan={false} minDistance={0.4} maxDistance={5} />

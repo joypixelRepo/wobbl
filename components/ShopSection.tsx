@@ -36,9 +36,8 @@ export default function ShopSection() {
         </div>
         <div className="shop-head-side">
           <p className="body-copy">
-            {PRODUCTS.length} juguetes y todas las cajas se abren. Levanta la tapa, gira el juguete,
-            elige color y mételo en tu caja. Sale en 48 horas, empaquetado por alguien que
-            también juega con ellos.
+            {PRODUCTS.length} piezas y todas las cajas se abren. Levanta la tapa, gira la pieza,
+            elige color y métela en tu caja. Sale en 48 horas, envuelta a mano por quien la sopló.
           </p>
           <ToyButton size="sm" tone="fg" onClick={() => { play('clack'); setBoxOpen(true); }} cursor="open">
             ABRIR MI CAJA ({count})
@@ -46,7 +45,7 @@ export default function ShopSection() {
         </div>
       </div>
 
-      <div className="shop-filters" role="group" aria-label="Filtrar por tipo de juguete">
+      <div className="shop-filters" role="group" aria-label="Filtrar por tipo de pieza">
         <button
           type="button"
           className={`shop-chip ${filter === 'todo' ? 'on' : ''}`}
@@ -70,7 +69,7 @@ export default function ShopSection() {
           );
         })}
       </div>
-      <p className="shop-filter-line">{line ?? 'Todo lo que sale de la fábrica, en una sola pared.'}</p>
+      <p className="shop-filter-line">{line ?? 'Todo lo que sale del horno, en una sola pared.'}</p>
 
       <div className="shelf">
         {shelves(list).map((row, i) => (
@@ -84,7 +83,8 @@ export default function ShopSection() {
       </div>
 
       <p className="shop-fine">
-        ENVÍO GRATIS DESDE 70 € · 30 DÍAS PARA DEVOLVER · CERTIFICADO CE · RECAMBIOS PARA SIEMPRE
+        ENVÍO GRATIS DESDE 70 € · CAJA ACOLCHADA Y SEGURO DE ROTURA · 30 DÍAS PARA DEVOLVER ·
+        NO ES UN JUGUETE: NO APTO PARA MENORES DE 14 AÑOS
       </p>
     </section>
   );

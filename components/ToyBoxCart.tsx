@@ -57,7 +57,7 @@ export default function ToyBoxCart() {
 
       <div className={`tbc-scrim ${boxOpen ? 'on' : ''}`} onClick={() => setBoxOpen(false)} aria-hidden />
 
-      <aside ref={panel} className="tbc" aria-label="Tu caja de juguetes" aria-hidden={!boxOpen}>
+      <aside ref={panel} className="tbc" aria-label="Tu caja" aria-hidden={!boxOpen}>
         <div className="tbc-lid"><span>TU CAJA</span></div>
 
         <div className="tbc-head">
@@ -73,7 +73,7 @@ export default function ToyBoxCart() {
               </div>
               <p className="label">LA CAJA ESTÁ VACÍA</p>
               <p className="body-copy" style={{ fontSize: '.95rem' }}>
-                Aquí dentro todavía no suena nada. Ve a coger algo de la estantería.
+                Aquí dentro no hay nada que envolver todavía. Ve a la estantería.
               </p>
               <button className="tbc-go" onClick={() => { setBoxOpen(false); document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' }); }} data-cursor="play" type="button">
                 LLÉVAME A LA ESTANTERÍA
@@ -112,7 +112,7 @@ export default function ToyBoxCart() {
             <span className="label">TOTAL</span>
             <strong>{total} €</strong>
           </div>
-          <p className="tbc-note">Envío gratis desde 70 € · 30 días para devolver sin preguntas</p>
+          <p className="tbc-note">Cada pieza va en caja acolchada con seguro de rotura · Envío gratis desde 70 €</p>
           <button className={`tbc-checkout ${checked ? 'done' : ''}`} onClick={checkout} disabled={!count} data-cursor="press" type="button">
             {checked ? '¡EMPAQUETADO! 🎉' : `PAGAR · ${total} €`}
           </button>

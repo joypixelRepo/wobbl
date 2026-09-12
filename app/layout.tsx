@@ -19,10 +19,10 @@ const ui = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'WOBBL — Jugar no tiene reglas',
   description:
-    'WOBBL fabrica juguetes de diseño para gente que nunca dejó de desmontar cosas. Abre la caja.',
+    'WOBBL sopla piezas de vidrio con forma de juguete, una a una y a mano. Mira una a contraluz.',
   openGraph: {
     title: 'WOBBL — Jugar no tiene reglas',
-    description: 'Una web con la que se juega. Juguetes de diseño, hechos para desmontarse.',
+    description: 'Una web con la que se juega. Piezas de vidrio soplado, hechas de una en una.',
     type: 'website',
   },
   // WOBBL es una marca inventada: sus productos, precios, dirección y empresa

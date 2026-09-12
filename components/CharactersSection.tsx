@@ -151,7 +151,7 @@ export default function CharactersSection() {
         <SplitHeading text="CARACTERES" className="t-huge ch-h2" />
         <SplitHeading text="MUY FUERTES." className="t-big ch-h3" sticker />
         <p className="body-copy ch-copy">
-          Viven dentro de los juguetes, en las cajas y, si te acercas demasiado, un poco
+          Viven dentro del horno, en las cajas de embalar y, si te acercas demasiado, un poco
           más a la izquierda de donde estaban.
         </p>
         <HowTo

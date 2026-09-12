@@ -67,7 +67,7 @@ export default function StorySection() {
           <SplitHeading text="JUGAMOS." className="t-mega st-h2" sticker />
           <p className="body-copy st-copy">
             Esto no es una declaración de intenciones. Son cinco viñetas, en orden, sobre cómo
-            un coche teledirigido roto acabó siendo once personas y una fábrica.
+            un caballito de cristal roto acabó siendo once personas y un horno encendido.
           </p>
         </div>
 

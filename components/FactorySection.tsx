@@ -33,12 +33,12 @@ let madeId = 1;
 type Stage = 'off' | 'ready' | 'feeding' | 'pressing' | 'painting' | 'out';
 
 const STAGE_TEXT: Record<Stage, string> = {
-  off: 'APAGADA',
-  ready: 'LISTA PARA FABRICAR',
-  feeding: 'ENTRANDO EL MATERIAL…',
-  pressing: 'PRENSANDO…',
-  painting: 'PINTANDO…',
-  out: '¡SALIENDO!',
+  off: 'HORNO FRÍO',
+  ready: 'HORNO A 1.100°',
+  feeding: 'SACANDO LA GOTA…',
+  pressing: 'CERRANDO EL MOLDE…',
+  painting: 'APLICANDO COLOR…',
+  out: '¡AL RECOCIDO!',
 };
 
 export default function FactorySection() {
@@ -152,18 +152,18 @@ export default function FactorySection() {
     <section id="factory" className="scene factory" data-palette="ink">
       <div className="fac-head">
         <div className="fac-head-copy">
-          <Sticker rotate={-3} tone="c">SECCIÓN 04 — LA PLANTA</Sticker>
+          <Sticker rotate={-3} tone="c">SECCIÓN 04 — EL HORNO</Sticker>
           <SplitHeading text="LA FÁBRICA" className="t-huge" />
-          <SplitHeading text="DE JUGUETES." className="t-huge fac-h2" />
+          <SplitHeading text="DE CRISTAL." className="t-huge fac-h2" />
         </div>
         <div className="fac-head-side">
           <p className="body-copy fac-copy">
-            Máquina de verdad: enciéndela, elige molde y pintura, y dale al botón verde.
-            El bloque entra, la prensa lo aplasta, la cabina lo pinta y sale un juguete
-            que puedes guardar en tu caja.
+            Horno de verdad: enciéndelo, elige molde y color, y dale al botón verde.
+            La gota sale al rojo, el molde la cierra, el color entra en caliente y la pieza
+            se va al recocido. Luego puedes guardarla en tu caja.
           </p>
           <HowTo
-            steps={['Enciende', 'Elige molde', 'Elige pintura', 'Fabrica']}
+            steps={['Enciende el horno', 'Elige molde', 'Elige color', 'Sopla']}
             active={step}
             done={doneSteps}
           />
@@ -201,7 +201,7 @@ export default function FactorySection() {
           </div>
 
           <div className="fac-ctrl">
-            <span className="fac-ctrl-h"><b>3</b> PINTURA</span>
+            <span className="fac-ctrl-h"><b>3</b> COLOR</span>
             <div className="fac-paints">
               {PAINTS.map((p, i) => (
                 <button
@@ -211,7 +211,7 @@ export default function FactorySection() {
                   onClick={() => pickPaint(i)}
                   data-cursor="press"
                   title={p.name}
-                  aria-label={`Pintura ${p.name}`}
+                  aria-label={`Color ${p.name}`}
                   type="button"
                 />
               ))}
@@ -227,9 +227,9 @@ export default function FactorySection() {
               data-cursor="press"
               type="button"
             >
-              {running ? 'FABRICANDO…' : 'FABRICAR UNO'}
+              {running ? 'SOPLANDO…' : 'SOPLAR UNA'}
             </button>
-            {nudge && <span className="fac-nudge">Primero enciende la máquina ↑</span>}
+            {nudge && <span className="fac-nudge">Primero enciende el horno ↑</span>}
           </div>
         </div>
 
@@ -276,7 +276,7 @@ export default function FactorySection() {
             <span className="fac-booth-nozzle bn-2" />
             <span className="fac-booth-nozzle bn-3" />
             <span className="fac-booth-mist" />
-            <span className="fac-booth-label">3 · PINTURA</span>
+            <span className="fac-booth-label">3 · COLOR</span>
           </div>
 
           <div className="fac-blank" ref={blank} aria-hidden>

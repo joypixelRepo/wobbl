@@ -133,7 +133,7 @@ export default function Hero({ onExplore }: { onExplore: () => void }) {
 
       <div className="hero-inner">
         <div className="hero-top">
-          <Sticker rotate={-5} tone="c">NUEVO · WOBBL BOT MK III</Sticker>
+          <Sticker rotate={-5} tone="c">NUEVO · ROBOT MODULAR EN ÁMBAR</Sticker>
         </div>
 
         <SplitHeading tag="h1" text="JUGAR NO" className="t-mega hero-line hero-line-1" />
@@ -161,8 +161,8 @@ export default function Hero({ onExplore }: { onExplore: () => void }) {
             <span className="hero-btn-knob" aria-hidden />
           </ToyButton>
           <p className="hero-note body-copy">
-            {PRODUCTS.length} juguetes. {PRODUCTS.reduce((n, p) => n + p.colorways.length, 0)} combinaciones
-            de color. Hechos para desmontarse, lanzarse, apilarse y volver a montarse mal.
+            {PRODUCTS.length} piezas. {PRODUCTS.reduce((n, p) => n + p.colorways.length, 0)} combinaciones
+            de color. Sopladas a mano, de una en una, y ninguna sale igual que la anterior.
           </p>
         </div>
       </div>

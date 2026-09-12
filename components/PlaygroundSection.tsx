@@ -148,8 +148,8 @@ export default function PlaygroundSection() {
         </div>
         <div className="pg-tools">
           <p className="body-copy pg-copy">
-            Coge cualquier cosa y lánzala: pesa, rebota y choca con las demás.
-            Toca un hueco vacío y cae algo nuevo.
+            Aquí sí puedes lanzarlas. Coge cualquier cosa y suéltala en movimiento: pesa,
+            rebota y choca con las demás. En la vitrina, ni se te ocurra.
           </p>
           <HowTo
             steps={['Arrastra un objeto', 'Suéltalo con impulso', 'Toca un hueco vacío']}
@@ -187,7 +187,7 @@ export default function PlaygroundSection() {
             <span className="pg-intro-title">Coge algo y lánzalo</span>
             <span className="pg-intro-sub">
               Arrastra cualquier objeto y suéltalo en movimiento: sale disparado, rebota y
-              choca con los demás. Toca un hueco vacío y cae uno nuevo.
+              choca con los demás. Es la única parte de la casa donde eso no cuesta dinero.
             </span>
           </div>
         </div>

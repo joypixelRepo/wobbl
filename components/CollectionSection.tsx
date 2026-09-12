@@ -97,15 +97,15 @@ export default function CollectionSection() {
         </div>
 
         <div className="col-intro">
-          <Sticker rotate={-4} tone="c">SECCIÓN 02 — LA HABITACIÓN</Sticker>
+          <Sticker rotate={-4} tone="c">SECCIÓN 02 — LA VITRINA</Sticker>
           <SplitHeading text="AQUÍ VIVEN" className="t-big" />
           <SplitHeading text="TODOS." className="t-big col-intro-2" sticker />
           <p className="body-copy col-intro-copy">
-            Sin cuadrículas ni filtros: una habitación con los {FEATURED.length} de siempre.
-            Recórrela{touch ? ' deslizando de lado' : ' bajando'} y toca el juguete que te llame la atención.
+            Sin cuadrículas ni filtros: una vitrina con las {FEATURED.length} de siempre.
+            Recórrela{touch ? ' deslizando de lado' : ' bajando'} y toca la pieza que te llame la atención.
           </p>
           <HowTo
-            steps={[touch ? 'Desliza por la sala' : 'Baja para avanzar', 'Toca un juguete', 'Gíralo y guárdalo']}
+            steps={[touch ? 'Desliza por la vitrina' : 'Baja para avanzar', 'Toca una pieza', 'Gírala y guárdala']}
             active={sheet ? 2 : hover ? 1 : 0}
             className="col-howto"
           />
@@ -147,10 +147,10 @@ export default function CollectionSection() {
 
         <div className="col-outro">
           <SplitHeading text="Y ESTA ES" className="t-big" />
-          <SplitHeading text="TODA LA SALA." className="t-big col-outro-2" />
+          <SplitHeading text="LA VITRINA." className="t-big col-outro-2" />
           <p className="body-copy">
-            {FEATURED.length} objetos, y en la estantería esperan {PRODUCTS.length - FEATURED.length} más.
-            Nada de relleno: si no sobrevivió a seis meses de prototipos, no está aquí.
+            {FEATURED.length} piezas, y en la estantería esperan {PRODUCTS.length - FEATURED.length} más.
+            Nada de relleno: si no salió entera del recocido, no está aquí.
           </p>
         </div>
       </div>

@@ -43,7 +43,7 @@ export interface Product {
   size: string;
   /** cómo está hecha */
   pieces: string;
-  palette: string;      // el mundo cromático al que pertenece este juguete
+  palette: string;      // el mundo cromático al que pertenece esta pieza
   colorways: Colorway[];
   blurb: string;
   /** sale a la habitación de la sección 02 */
@@ -195,7 +195,7 @@ export const PRODUCTS: Product[] = [
     blurb: 'Las placas del lomo se aplican de una en una con la pieza todavía blanda, y por eso no hay dos filas iguales. Los dientes son hilo blanco opaco, cortado a pinza.',
   },
   {
-    id: 'unicornio', name: 'UNICORNIO', sub: 'Crin de murrina', kind: 'unicorn', category: 'criaturas',
+    id: 'unicornio', name: 'UNICORNIO', sub: 'Crin de cañas fundidas', kind: 'unicorn', category: 'criaturas',
     price: 68, size: '15 cm', pieces: 'Murrina', palette: 'bubble', featured: true,
     colorways: [
       { name: 'Merengue', body: '#FFF4E4', accent: '#FF7FC4', extra: '#6FD0FF' },
@@ -309,7 +309,7 @@ export const PRODUCTS: Product[] = [
     blurb: 'Cinco aros macizos ensartados en un eje de cristal, cada uno con su imán en la cara de abajo para que la torre no se venga si rozas la mesa. Apilados, la luz atraviesa los cinco colores a la vez y pinta el suelo.',
   },
   {
-    id: 'muelle-saltarin', name: 'ESPIRAL', sub: 'Espiral estirada a la llama', kind: 'spring', category: 'clasicos',
+    id: 'muelle-saltarin', name: 'ESPIRAL', sub: 'Siete vueltas sin molde', kind: 'spring', category: 'clasicos',
     price: 54, size: '14 cm', pieces: 'Al soplete', palette: 'bubble',
     colorways: [
       { name: 'Caramelo', body: '#FF7FC4', accent: '#FFCE00', extra: '#2B2BFF' },
@@ -329,7 +329,7 @@ export const PRODUCTS: Product[] = [
     blurb: 'Los gajos no están pintados: están tallados con rueda de diamante, uno a uno, sobre la esfera ya recocida. Cada surco son cuatro minutos.',
   },
   {
-    id: 'caja-musical', name: 'CAJA MUSICAL', sub: 'Bocina con pan de oro', kind: 'noise', category: 'clasicos',
+    id: 'caja-musical', name: 'ORGANILLO', sub: 'Bocina con pan de oro', kind: 'noise', category: 'clasicos',
     price: 44, size: '15 cm', pieces: 'Soplado en molde', palette: 'magenta',
     colorways: [
       { name: 'Bocina', body: '#B7F04A', accent: '#E5007D', extra: '#100C14' },

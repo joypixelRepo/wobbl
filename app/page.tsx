@@ -91,7 +91,7 @@ export default function Page() {
       <Transition ref={transition} />
       <EggFriend trigger={egg} />
 
-      <a className="skip-link" href="#collection">SALTAR A LOS JUGUETES</a>
+      <a className="skip-link" href="#collection">SALTAR A LA VITRINA</a>
 
       <main id="main" className="page" aria-hidden={loading}>
         <div data-palette="cream">
@@ -99,7 +99,7 @@ export default function Page() {
         </div>
 
         <Marquee
-          items={['NO ES SOLO UN JUGUETE', 'HECHO PARA ROMPERSE', 'Y VOLVER A MONTARSE', 'FABRICADO EN BARCELONA']}
+          items={['NO ES UN JUGUETE', 'SOPLADO A MANO, PIEZA A PIEZA', 'NO HAY DOS IGUALES', 'HORNO ENCENDIDO EN BARCELONA']}
           speed={38}
           className="ribbon ribbon-a"
         />
@@ -110,7 +110,7 @@ export default function Page() {
           id="statement-1"
           line1="IMAGINACIÓN"
           line2="ENORME."
-          copy="Un juguete tiene que sobrevivir a que se sienten encima, a bajar las escaleras por su cuenta y a pasar una semana en el jardín. Todo lo que hacemos está pensado para desmontarse y volver a montarse. Esa es, básicamente, la gracia."
+          copy="El vidrio no admite arreglos: o sale a la primera o vuelve al horno hecho pedazos. Cada pieza pasa entera por las manos de una sola persona, desde la caña hasta el recocido. Esa es, básicamente, la gracia."
           kind="castle"
           palette="grape"
           body="#B7F04A" accent="#FFCE00" extra="#FF7FC4"
@@ -138,9 +138,9 @@ export default function Page() {
 
         <Statement
           id="statement-2"
-          line1="VAMOS"
-          line2="A JUGAR."
-          copy="Esa es toda la filosofía. No hay un segundo párrafo."
+          line1="MÍRALO A"
+          line2="CONTRALUZ."
+          copy="Esa es toda la instrucción. No hay un segundo párrafo."
           kind="ufo"
           palette="tomato"
           body="#FFCE00" accent="#2B2BFF" extra="#FFF4E4"

@@ -1,104 +1,141 @@
 'use client';
 
 /* ------------------------------------------------------------------ *
- * Los materiales del catálogo. Todo lo que se fabrica en WOBBL sale de
- * esta lista: si un juguete inventa su propio acabado, dentro de la
- * misma estantería se nota.
+ * Los materiales del catálogo. Todo lo que sale del horno de WOBBL se
+ * hace con esta lista, y son cuatro vidrios y dos metales: si una
+ * pieza inventa su propio acabado, dentro de la misma vitrina se nota.
  *
- * La clave del plástico de juguete es el clearcoat: una capa de barniz
- * sobre el color que recoge los reflejos del plató. Sin ella el color
- * se lee como pintura mate y el objeto parece de papel.
+ * Lo que hace que el vidrio parezca vidrio y no plástico brillante es
+ * `transmission`: la luz lo ATRAVIESA en vez de rebotar. Con `ior` 1.5
+ * —el índice de refracción del vidrio de verdad— y un `thickness` que
+ * marque el grosor, la pieza deforma lo que tiene detrás, que es el
+ * gesto que ningún plástico opaco puede fingir.
+ *
+ * Los nombres se conservan (CAR_PAINT, PLASTIC, RUBBER…) para que los
+ * veintiocho modelos no tengan que cambiar ni una línea: lo que cambia
+ * es de qué está hecho cada cosa, no dónde va.
  * ------------------------------------------------------------------ */
 
-export const PLASTIC = {
-  metalness: 0,
-  roughness: 0.24,
-  clearcoat: 0.9,
-  clearcoatRoughness: 0.14,
-  envMapIntensity: 1.15,
-} as const;
-
-/** Plástico de tacto suave: mandos, agarraderas, piezas grandes. */
-export const SOFT_PLASTIC = {
-  metalness: 0,
-  roughness: 0.62,
-  clearcoat: 0.25,
-  clearcoatRoughness: 0.45,
-  envMapIntensity: 0.9,
-} as const;
-
-/** Goma de neumático y orugas. Nunca negro puro: se traga la forma. */
-export const RUBBER = {
-  color: '#1b191f',
-  metalness: 0,
-  roughness: 0.88,
-  clearcoat: 0.1,
-  clearcoatRoughness: 0.7,
-  envMapIntensity: 0.55,
-} as const;
-
-/** Cromado de ejes, tornillos y embellecedores. */
-export const CHROME = {
-  color: '#e8eaf0',
-  metalness: 1,
-  roughness: 0.16,
-  envMapIntensity: 1.5,
-} as const;
-
-/** Metal pintado, para chasis de zamak y piezas de fundición. */
-export const PAINTED_METAL = {
-  metalness: 0.35,
-  roughness: 0.3,
-  clearcoat: 0.7,
-  clearcoatRoughness: 0.2,
-  envMapIntensity: 1.2,
-} as const;
-
-/** Haya barnizada de los bloques y los muebles. */
-export const WOOD = {
-  color: '#e3b887',
-  metalness: 0,
-  roughness: 0.55,
-  clearcoat: 0.35,
-  clearcoatRoughness: 0.4,
-  envMapIntensity: 0.8,
-} as const;
-
 /**
- * Metacrilato tintado de parabrisas y cúpulas. Es opacidad, no
- * `transmission`: la refracción real obliga a three a repintar la
- * escena por cada objeto y en una estantería entera no sale a cuenta.
- */
-export const TINTED = {
-  metalness: 0,
-  roughness: 0.06,
-  clearcoat: 1,
-  clearcoatRoughness: 0.04,
-  transparent: true,
-  opacity: 0.46,
-  envMapIntensity: 2.2,
-} as const;
-
-/** Peluche: sin brillo y con sheen, que es lo que hace la pelusa. */
-export const PLUSH = {
-  metalness: 0,
-  roughness: 0.98,
-  sheen: 1,
-  sheenRoughness: 0.7,
-  sheenColor: '#ffffff',
-  clearcoat: 0,
-  envMapIntensity: 0.7,
-} as const;
-
-/**
- * Pintura de automoción de los coches de fundición: capa de color muy
- * lisa bajo un barniz duro. Metalness a cero — subirla apaga el color
- * y lo deja gris, que es el error clásico al pintar un coche en PBR.
+ * Vidrio de color: el cuerpo de casi todas las piezas.
+ *
+ * La transmisión se queda baja a propósito. En `MeshPhysicalMaterial`
+ * el color del volumen lo pone `attenuationColor`, no `color`, así que
+ * al subirla el `color` que pasa cada modelo deja de pintar: con 0.92
+ * las piezas se volvían literalmente invisibles —reflejaban el blanco
+ * del plató y transmitían el gris del suelo, o sea, el fondo exacto—.
+ * A 0.30 se ve el color, se ve a través por las partes finas y la
+ * silueta se sigue entendiendo, que es lo que tiene que pasar en una
+ * miniatura de doce centímetros.
  */
 export const CAR_PAINT = {
   metalness: 0,
-  roughness: 0.17,
+  roughness: 0.26,
+  transmission: 0.32,
+  thickness: 0.26,
+  ior: 1.5,
   clearcoat: 1,
-  clearcoatRoughness: 0.045,
-  envMapIntensity: 1.35,
+  clearcoatRoughness: 0.10,
+  envMapIntensity: 0.85,
+  specularIntensity: 1,
+} as const;
+
+/**
+ * Vidrio opaco (lattimo): el vidrio lechoso de toda la vida. Va en las
+ * piezas pequeñas —franjas, aletas, remates— porque si TODO transmite
+ * la luz, la silueta se deshace y no se entiende qué es el objeto.
+ */
+export const PLASTIC = {
+  metalness: 0,
+  roughness: 0.16,
+  transmission: 0.08,
+  thickness: 0.10,
+  ior: 1.5,
+  clearcoat: 1,
+  clearcoatRoughness: 0.08,
+  envMapIntensity: 0.9,
+} as const;
+
+/** Vidrio satinado, esmerilado al chorro de arena. Sin reflejo nítido. */
+export const SOFT_PLASTIC = {
+  metalness: 0,
+  roughness: 0.62,
+  transmission: 0.34,
+  thickness: 0.22,
+  ior: 1.5,
+  clearcoat: 0.2,
+  clearcoatRoughness: 0.6,
+  envMapIntensity: 0.95,
+} as const;
+
+/** Vidrio negro para ruedas y orugas: opaco, pero con brillo de vidrio. */
+export const RUBBER = {
+  color: '#16141b',
+  metalness: 0,
+  roughness: 0.14,
+  transmission: 0,
+  clearcoat: 1,
+  clearcoatRoughness: 0.06,
+  envMapIntensity: 1.1,
+} as const;
+
+/** Pan de plata: la lámina metálica que se aplica antes de soplar. */
+export const CHROME = {
+  color: '#e9ebf1',
+  metalness: 1,
+  roughness: 0.14,
+  envMapIntensity: 1.6,
+} as const;
+
+/** Vidrio con inclusión metálica: cuerpos densos y muy reflectantes. */
+export const PAINTED_METAL = {
+  metalness: 0.25,
+  roughness: 0.10,
+  transmission: 0.34,
+  thickness: 0.28,
+  ior: 1.5,
+  clearcoat: 1,
+  clearcoatRoughness: 0.04,
+  envMapIntensity: 1.45,
+} as const;
+
+/** Vidrio ámbar, cálido y denso. Donde antes había haya. */
+export const WOOD = {
+  color: '#d9a45f',
+  metalness: 0,
+  roughness: 0.06,
+  transmission: 0.60,
+  thickness: 0.32,
+  ior: 1.5,
+  clearcoat: 1,
+  clearcoatRoughness: 0.03,
+  envMapIntensity: 1.45,
+} as const;
+
+/** Cristal transparente sin apenas color: cúpulas, lunas y matraces. */
+export const TINTED = {
+  metalness: 0,
+  roughness: 0.06,
+  transmission: 0.72,
+  thickness: 0.14,
+  ior: 1.52,
+  clearcoat: 1,
+  clearcoatRoughness: 0.03,
+  envMapIntensity: 1.2,
+} as const;
+
+/**
+ * Vidrio satinado profundo, para el oso. Era el peluche del catálogo y
+ * ahora es la única pieza esmerilada de arriba abajo: no refleja nada
+ * y se queda en un blanco lechoso con tacto de terciopelo.
+ */
+export const PLUSH = {
+  metalness: 0,
+  roughness: 0.78,
+  transmission: 0.38,
+  thickness: 0.26,
+  ior: 1.5,
+  clearcoat: 0.12,
+  clearcoatRoughness: 0.8,
+  envMapIntensity: 0.9,
 } as const;

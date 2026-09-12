@@ -121,8 +121,8 @@ export default function ColorsSection({ onPick }: { onPick: (p: Palette) => void
       </div>
 
       <p className="body-copy colors-note">
-        Cada juguete WOBBL sale en tres combinaciones de color porque una nunca iba a bastar.
-        Pulsa una ficha y la web entera cambia con ella.
+        El color se aplica con el vidrio al rojo, así que cada pieza sale en tres combinaciones
+        y ninguna admite una cuarta. Pulsa una ficha y la web entera cambia con ella.
       </p>
 
       {ripple && (

@@ -15,6 +15,31 @@ import { Environment, Lightformer, ContactShadows, PerspectiveCamera } from '@re
  * un color plano.
  * ------------------------------------------------------------------ */
 
+/**
+ * El ciclorama. Un objeto de vidrio sobre un fondo liso no se ve: la
+ * gracia del vidrio es que DEFORMA lo que tiene detrás, y si detrás no
+ * hay nada, no hay nada que deformar y la pieza se lee como plástico
+ * brillante. Por eso el vidrio se fotografía siempre sobre un fondo
+ * con suelo y horizonte, aunque el conjunto siga siendo blanco.
+ */
+export function Cove() {
+  return (
+    <group>
+      {/* Suelo y fondo dejan una línea de horizonte justo detrás de la
+          pieza: es esa línea, deformada al atravesar el vidrio, la que
+          delata que el objeto es transparente y no pintado. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0.52]} receiveShadow>
+        <planeGeometry args={[3.4, 2.5]} />
+        <meshStandardMaterial color="#e4e0da" roughness={0.94} metalness={0} />
+      </mesh>
+      <mesh position={[0, 0.85, -0.73]} receiveShadow>
+        <planeGeometry args={[3.4, 2.2]} />
+        <meshStandardMaterial color="#fdfcfa" roughness={1} metalness={0} />
+      </mesh>
+    </group>
+  );
+}
+
 export function StudioRig({ shadows = true }: { shadows?: boolean }) {
   return (
     <>
@@ -38,6 +63,12 @@ export function StudioRig({ shadows = true }: { shadows?: boolean }) {
         <Lightformer form="rect" intensity={1.6} position={[-1.2, 2.2, -5]} scale={[5, 1.4, 1]} />
         {/* rebote del suelo, muy suave */}
         <Lightformer form="rect" intensity={0.35} color="#fffaf2" position={[0, -3, 0]} scale={[8, 8, 1]} rotation={[-Math.PI / 2, 0, 0]} />
+        {/* Cartones negros. Es LA técnica para fotografiar vidrio: sin
+            algo oscuro que reflejar, una pieza transparente sobre fondo
+            claro no tiene borde y desaparece. Estos dos paneles son los
+            que le dibujan el contorno y el grosor. */}
+        <Lightformer form="rect" intensity={0} color="#000000" position={[-3.2, 0.6, 2.2]} scale={[2.6, 4, 1]} rotation={[0, Math.PI / 2, 0]} />
+        <Lightformer form="rect" intensity={0} color="#000000" position={[3.4, 0.4, 2.6]} scale={[2.2, 4, 1]} rotation={[0, -Math.PI / 2, 0]} />
       </Environment>
 
       {/* Una direccional con sombra propia: el entorno ilumina pero no

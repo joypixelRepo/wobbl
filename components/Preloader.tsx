@@ -108,7 +108,7 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <div ref={root} className="pl" role="status" aria-label="Abriendo la caja de juguetes">
+    <div ref={root} className="pl" role="status" aria-label="Sacando la pieza del horno">
       {/* colour explosion panels */}
       <div className="pl-wipes" aria-hidden>
         {['#FFCE00', '#FF7A1A', '#FF4433', '#FF7FC4', '#7B3FE4', '#2B2BFF', '#58E3B4', '#B7F04A'].map((c, i) => (

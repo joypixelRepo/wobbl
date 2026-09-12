@@ -7,7 +7,7 @@ import { play } from '@/lib/sound';
 export interface MenuItem { id: string; label: string; hint: string; color: string; }
 
 export const MENU: MenuItem[] = [
-  { id: 'collection', label: 'JUGUETES', hint: 'La colección',    color: '#FF4433' },
+  { id: 'collection', label: 'LA VITRINA', hint: 'La colección',    color: '#FF4433' },
   { id: 'colors',     label: 'MUNDOS',   hint: 'Cámbialo todo',    color: '#2B2BFF' },
   { id: 'characters', label: 'NOSOTROS', hint: 'Conoce a la banda', color: '#58E3B4' },
   { id: 'story',      label: 'HISTORIA', hint: 'Por qué jugamos',  color: '#FFCE00' },
@@ -138,7 +138,7 @@ export default function ToyBoxMenu({
           </nav>
 
           <div className="tb-foot">
-            <span>WOBBL JUGUETES · HECHOS EN UNA FÁBRICA DE VERDAD</span>
+            <span>WOBBL VIDRIO · SOPLADO EN UN HORNO DE VERDAD</span>
             <button className="tb-close" onClick={onClose} data-cursor="press" type="button">CERRAR LA CAJA ✕</button>
           </div>
         </div>
