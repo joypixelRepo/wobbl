@@ -1000,7 +1000,9 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 }
 .col-room {
   position: relative;
-  width: 320vw;
+  /* Anchura pensada para los juguetes destacados de data/catalog.ts: da aire
+     entre pieza y pieza sin que el pin del scroll se haga eterno. */
+  width: 460vw;
   height: 100svh;
   will-change: transform;
 }
@@ -1098,6 +1100,16 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 }
 
 /* ===================== PRODUCT DETAIL ===================== */
+/* Escenario 3D: el lienzo ocupa todo el hueco del juguete y la rotación
+   la lleva el propio visor, no el transform de CSS. */
+.pd-stage.is-3d { touch-action: none; }
+.pd-3d { position: absolute; inset: 0; }
+.pd-3d canvas { display: block; width: 100% !important; height: 100% !important; }
+.pd-loading {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  font-size: .7rem; letter-spacing: .18em; opacity: .6;
+}
+
 .pd { position: fixed; inset: 0; z-index: 11500; display: grid; place-items: center; padding: clamp(10px, 3vw, 40px); }
 .pd-scrim { position: absolute; inset: 0; background: rgba(16,12,20,.62); backdrop-filter: blur(6px); border: 0; cursor: pointer; }
 .pd-card {
@@ -1838,13 +1850,49 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .shop-h2 { color: var(--b); }
 .shop-head-side { display: grid; gap: 14px; justify-items: start; }
 
+/* Filtros: fichas de plástico, no pestañas de formulario. */
+.shop-filters {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: -6px;
+}
+.shop-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-ui), sans-serif;
+  font-weight: 800; font-size: .72rem; letter-spacing: .12em;
+  padding: 11px 18px; border-radius: 99px;
+  background: var(--surface); color: var(--on-surface);
+  border: 3px solid var(--fg);
+  box-shadow: 0 5px 0 var(--fg);
+  cursor: pointer;
+  transition: transform .2s var(--ease-toy), background-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.shop-chip i {
+  font-style: normal; font-size: .62rem; opacity: .55;
+  padding: 2px 7px; border-radius: 99px; background: rgba(0,0,0,.12);
+}
+.shop-chip:hover { transform: translateY(-3px) rotate(-1.5deg); }
+.shop-chip:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--fg); }
+.shop-chip.on {
+  background: var(--a); color: var(--on-a);
+  transform: rotate(-1deg);
+}
+.shop-chip.on i { background: rgba(0,0,0,.2); opacity: .8; }
+.shop-filter-line {
+  font-family: var(--font-ui), sans-serif;
+  font-size: .8rem; opacity: .6; margin-top: -14px;
+}
+
 .shelf { display: grid; gap: clamp(10px, 1.6vw, 18px); }
+.shelf-bay { display: grid; gap: clamp(10px, 1.6vw, 18px); }
 .shelf-row {
   display: grid; grid-template-columns: repeat(4, 1fr);
   gap: clamp(10px, 1.6vw, 22px);
   align-items: end;
 }
 .shelf-plank {
+  /* Es un <span> dentro de cada balda: sin display:block la altura no
+     se aplica y la tabla de la estantería desaparece. */
+  display: block;
   height: 18px; border-radius: 6px;
   background: var(--fg);
   box-shadow: 0 10px 0 rgba(16,12,20,.28);
@@ -1926,6 +1974,21 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .tbx-tag b { font-family: var(--font-display), sans-serif; font-size: .8rem; }
 .tbx-tag i { font-style: normal; font-size: .58rem; letter-spacing: .12em; opacity: .6; font-weight: 700; }
 .tbx.open .tbx-tag { opacity: 1; transform: translateX(-50%) rotate(-2deg) scale(1) translateY(-4px); }
+
+/* Aviso de que la caja se abre. Aparece al pasar por encima, porque en
+   reposo la tarjeta ya tiene bastante que leer. */
+.tbx-open {
+  position: absolute; left: 50%; bottom: 10px;
+  transform: translateX(-50%) translateY(8px);
+  font-family: var(--font-ui), sans-serif;
+  font-weight: 800; font-size: .58rem; letter-spacing: .16em;
+  padding: 7px 14px; border-radius: 99px;
+  background: var(--fg); color: var(--bg);
+  border: 0; cursor: pointer; opacity: 0;
+  transition: opacity .24s ease, transform .24s var(--ease-toy);
+  z-index: 3;
+}
+.tbx:hover .tbx-open, .tbx-open:focus-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 .tbx-meta { display: grid; gap: 5px; }
 .tbx-line { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
@@ -2010,13 +2073,17 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 .footer-form button:hover { transform: scale(1.08) rotate(-3deg); }
 
 .footer-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
-.footer-list a {
+.footer-list a,
+.footer-list button {
   display: flex; align-items: baseline; gap: 8px;
   font-size: .9rem; font-weight: 600; opacity: .72;
   transition: opacity .25s ease, transform .3s var(--ease-toy), color .25s ease;
+  background: none; border: 0; text-align: left; cursor: pointer; font: inherit; width: 100%;
 }
-.footer-list a i { font-style: normal; font-size: .68rem; opacity: .5; }
-.footer-list a:hover { opacity: 1; transform: translateX(8px); color: var(--c); }
+.footer-list a i,
+.footer-list button i { font-style: normal; font-size: .68rem; opacity: .5; }
+.footer-list a:hover,
+.footer-list button:hover { opacity: 1; transform: translateX(8px); color: var(--c); }
 
 .footer-mail {
   font-family: var(--font-display), sans-serif; font-weight: 700;
@@ -2047,7 +2114,7 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
 
 /* --- the parade --- */
 .parade { position: fixed; inset: 0; z-index: 9200; pointer-events: none; overflow: hidden; }
-.parade-toy { position: absolute; will-change: transform; }
+.parade-toy { cursor: pointer; position: absolute; will-change: transform; }
 .parade-toy svg { width: 100%; height: auto; }
 /* animation-fill-mode: both — without the backwards half every toy sat parked
    and visible at the edge of the screen until its delay elapsed, then jumped

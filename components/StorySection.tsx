@@ -7,6 +7,7 @@ import Toy from '@/components/Toy';
 import { SplitHeading, Sticker } from '@/components/ui';
 import { STORY } from '@/data/catalog';
 import { play } from '@/lib/sound';
+import { useShop } from '@/lib/store';
 
 const PANEL_COLORS = [
   { bg: '#100C14', fg: '#FFF4E4', a: '#FFCE00', b: '#2B2BFF', c: '#FF4433' },
@@ -18,6 +19,7 @@ const PANEL_COLORS = [
 
 export default function StorySection() {
   const root = useRef<HTMLDivElement>(null);
+  const { openSheet } = useShop();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -73,7 +75,7 @@ export default function StorySection() {
           {STORY.map((s2, i) => {
             const c = PANEL_COLORS[i % PANEL_COLORS.length];
             return (
-              <span key={s2.year} style={{ background: c.bg }} data-cursor="play">
+              <span key={s2.year} style={{ background: c.bg }} data-cursor="view" onClick={() => openSheet(s2.kind)}>
                 <Toy kind={s2.kind} body={c.a} accent={c.b} extra={c.c} shadow={false} />
               </span>
             );
@@ -90,7 +92,7 @@ export default function StorySection() {
             className={`st-panel ${i % 2 ? 'flip' : ''}`}
             style={{ background: c.bg, color: c.fg }}
           >
-            <div className="st-art" data-cursor="play" onPointerDown={() => play('boing')}>
+            <div className="st-art" data-cursor="view" onPointerDown={() => play('boing')} onClick={() => openSheet(s.kind)}>
               <span className="st-blob" style={{ background: c.a }} aria-hidden />
               <Toy kind={s.kind} body={c.a} accent={c.b} extra={c.c} look={{ x: 0, y: 0 }} />
               <span className="st-frame-no" aria-hidden>{String(i + 1).padStart(2, '0')}</span>

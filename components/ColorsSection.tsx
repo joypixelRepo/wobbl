@@ -5,6 +5,7 @@ import Toy from '@/components/Toy';
 import { SplitHeading, Sticker } from '@/components/ui';
 import { PALETTES, applyPalette, type Palette } from '@/lib/theme';
 import { play } from '@/lib/sound';
+import { useShop } from '@/lib/store';
 
 /**
  * The colour lab. Picking a chip repaints the document — background, type,
@@ -12,6 +13,7 @@ import { play } from '@/lib/sound';
  * the rest of the site reads from. Nothing here is a local override.
  */
 export default function ColorsSection({ onPick }: { onPick: (p: Palette) => void }) {
+  const { openSheet } = useShop();
   const [active, setActive] = useState(0);
   const [ripple, setRipple] = useState<{ id: number; x: number; y: number; color: string } | null>(null);
   const rid = useRef(1);
@@ -73,9 +75,15 @@ export default function ColorsSection({ onPick }: { onPick: (p: Palette) => void
 
       <div className="colors-stage">
         <div className="colors-toys">
-          {(['bot', 'blob', 'planet'] as const).map((k, i) => (
-            <div key={k} className="colors-toy toy-float" style={{ ['--dur' as string]: `${6 + i}s`, ['--delay' as string]: `${i * .5}s` }} data-cursor="play"
-              onPointerDown={() => play('boing')}>
+          {(['bot', 'dino', 'rocket'] as const).map((k, i) => (
+            <div
+              key={k}
+              className="colors-toy toy-float"
+              style={{ ['--dur' as string]: `${6 + i}s`, ['--delay' as string]: `${i * .5}s` }}
+              data-cursor="view"
+              onPointerDown={() => play('boing')}
+              onClick={() => openSheet(k)}
+            >
               <Toy
                 kind={k}
                 body={[p.a, p.b, p.d][i]}

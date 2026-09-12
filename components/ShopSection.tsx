@@ -1,15 +1,31 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Toy from '@/components/Toy';
 import { SplitHeading, Sticker, ToyButton } from '@/components/ui';
-import { PRODUCTS, type Product } from '@/data/catalog';
+import { CATEGORIES, PRODUCTS, type CategoryId, type Product } from '@/data/catalog';
 import { useShop } from '@/lib/store';
 import { play } from '@/lib/sound';
 import { useIsTouch } from '@/lib/hooks';
 
+/** Cuatro por balda: la estantería se construye sola a partir del catálogo. */
+const PER_SHELF = 4;
+function shelves(list: Product[]) {
+  const rows: Product[][] = [];
+  for (let i = 0; i < list.length; i += PER_SHELF) rows.push(list.slice(i, i + PER_SHELF));
+  return rows;
+}
+
 export default function ShopSection() {
-  const { setBoxOpen, count } = useShop();
+  const { setBoxOpen, count, openSheet } = useShop();
+  const [filter, setFilter] = useState<CategoryId | 'todo'>('todo');
+
+  const list = useMemo(
+    () => (filter === 'todo' ? PRODUCTS : PRODUCTS.filter((p) => p.category === filter)),
+    [filter],
+  );
+  const line = CATEGORIES.find((c) => c.id === filter)?.line;
+
   return (
     <section id="shop" className="scene shop" data-palette="cream">
       <div className="shop-head">
@@ -20,8 +36,9 @@ export default function ShopSection() {
         </div>
         <div className="shop-head-side">
           <p className="body-copy">
-            Todas las cajas se abren. Levanta la tapa, gira el juguete, elige color y mételo
-            en tu caja. Sale en 48 horas, empaquetado por alguien que también juega con ellos.
+            {PRODUCTS.length} juguetes y todas las cajas se abren. Levanta la tapa, gira el juguete,
+            elige color y mételo en tu caja. Sale en 48 horas, empaquetado por alguien que
+            también juega con ellos.
           </p>
           <ToyButton size="sm" tone="fg" onClick={() => { play('clack'); setBoxOpen(true); }} cursor="open">
             ABRIR MI CAJA ({count})
@@ -29,15 +46,41 @@ export default function ShopSection() {
         </div>
       </div>
 
+      <div className="shop-filters" role="group" aria-label="Filtrar por tipo de juguete">
+        <button
+          type="button"
+          className={`shop-chip ${filter === 'todo' ? 'on' : ''}`}
+          onClick={() => { setFilter('todo'); play('click'); }}
+          data-cursor="press"
+        >
+          TODO <i>{PRODUCTS.length}</i>
+        </button>
+        {CATEGORIES.map((c) => {
+          const n = PRODUCTS.filter((p) => p.category === c.id).length;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              className={`shop-chip ${filter === c.id ? 'on' : ''}`}
+              onClick={() => { setFilter(c.id); play('click'); }}
+              data-cursor="press"
+            >
+              {c.name} <i>{n}</i>
+            </button>
+          );
+        })}
+      </div>
+      <p className="shop-filter-line">{line ?? 'Todo lo que sale de la fábrica, en una sola pared.'}</p>
+
       <div className="shelf">
-        <div className="shelf-row">
-          {PRODUCTS.slice(0, 4).map((p) => <ToyBoxCard key={p.id} product={p} />)}
-        </div>
-        <span className="shelf-plank" aria-hidden />
-        <div className="shelf-row">
-          {PRODUCTS.slice(4).map((p) => <ToyBoxCard key={p.id} product={p} />)}
-        </div>
-        <span className="shelf-plank" aria-hidden />
+        {shelves(list).map((row, i) => (
+          <div key={`${filter}-${i}`} className="shelf-bay">
+            <div className="shelf-row">
+              {row.map((p) => <ToyBoxCard key={p.id} product={p} onOpen={() => openSheet(p.id)} />)}
+            </div>
+            <span className="shelf-plank" aria-hidden />
+          </div>
+        ))}
       </div>
 
       <p className="shop-fine">
@@ -51,13 +94,15 @@ export default function ShopSection() {
  * A product card shaped like the actual packaging. Hovering lifts the
  * lid; the toy rises out of the box and the whole card changes colour.
  * ------------------------------------------------------------------ */
-function ToyBoxCard({ product }: { product: Product }) {
+function ToyBoxCard({ product, onOpen }: { product: Product; onOpen: () => void }) {
   const { add } = useShop();
   const [cw, setCw] = useState(0);
   const [open, setOpen] = useState(false);
   const [turn, setTurn] = useState(0);
   const box = useRef<HTMLDivElement>(null);
-  const drag = useRef({ on: false, x: 0, start: 0 });
+  // `moved` acumula el recorrido del puntero: si apenas se ha movido es
+  // un clic para abrir la ficha, y si no, es un arrastre para girar.
+  const drag = useRef({ on: false, x: 0, start: 0, moved: 0 });
   const touch = useIsTouch();
   const c = product.colorways[cw];
 
@@ -80,13 +125,23 @@ function ToyBoxCard({ product }: { product: Product }) {
         <div
           className="tbx-toy"
           style={{ transform: `perspective(700px) rotateY(${turn}deg) scaleX(${flipped ? -1 : 1})` }}
+          data-cursor="view"
           onPointerDown={(e) => {
-            drag.current = { on: true, x: e.clientX, start: turn };
+            drag.current = { on: true, x: e.clientX, start: turn, moved: 0 };
             try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* no capture available */ }
-            if (touch) setOpen((o) => !o);
+            if (touch) setOpen(true);
           }}
-          onPointerMove={(e) => { if (drag.current.on) setTurn(drag.current.start + (e.clientX - drag.current.x) * .8); }}
-          onPointerUp={() => { drag.current.on = false; }}
+          onPointerMove={(e) => {
+            if (!drag.current.on) return;
+            const dx = e.clientX - drag.current.x;
+            drag.current.moved = Math.max(drag.current.moved, Math.abs(dx));
+            setTurn(drag.current.start + dx * .8);
+          }}
+          onPointerUp={() => {
+            const wasDrag = drag.current.moved > 6;
+            drag.current.on = false;
+            if (!wasDrag) onOpen();
+          }}
           onPointerCancel={() => { drag.current.on = false; }}
         >
           <Toy kind={product.kind} body={c.body} accent={c.accent} extra={c.extra} look={{ x: open ? .4 : 0, y: open ? -.2 : 0 }} spin={turn} shadow={false} />
@@ -94,8 +149,16 @@ function ToyBoxCard({ product }: { product: Product }) {
 
         <span className="tbx-tag" aria-hidden>
           <b>{product.name}</b>
-          <i>{product.ages}</i>
+          <i>{product.size}</i>
         </span>
+        <button
+          className="tbx-open"
+          type="button"
+          onClick={onOpen}
+          data-cursor="view"
+        >
+          VER FICHA
+        </button>
       </div>
 
       <div className="tbx-meta">

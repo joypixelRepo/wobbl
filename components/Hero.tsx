@@ -6,6 +6,7 @@ import { SplitHeading, ToyButton, Sticker } from '@/components/ui';
 import { usePointer, useRaf, useIsTouch, lerp, rand } from '@/lib/hooks';
 import { play } from '@/lib/sound';
 import { useShop } from '@/lib/store';
+import { PRODUCTS } from '@/data/catalog';
 
 const REACTIONS: Record<string, { word: string; sound: 'boing' | 'pop' | 'snap' | 'click' | 'whoosh' }> = {
   head:   { word: '¡HOLA!',  sound: 'boing' },
@@ -17,12 +18,12 @@ const REACTIONS: Record<string, { word: string; sound: 'boing' | 'pop' | 'snap' 
 };
 
 const ORBIT = [
-  { kind: 'spring' as const, x: 12, y: 22, s: 1.0, body: '#FF7FC4', accent: '#FFCE00', extra: '#2B2BFF', depth: 1.5, dur: 7 },
-  { kind: 'planet' as const, x: 84, y: 16, s: .82, body: '#7B3FE4', accent: '#B7F04A', extra: '#FFCE00', depth: 2.2, dur: 9 },
-  { kind: 'racer'  as const, x: 88, y: 68, s: .9,  body: '#FF4433', accent: '#FFF4E4', extra: '#FFCE00', depth: 1.1, dur: 6.2 },
-  { kind: 'blob'   as const, x: 8,  y: 70, s: .86, body: '#58E3B4', accent: '#100C14', extra: '#FFCE00', depth: 1.8, dur: 8 },
-  { kind: 'stack'  as const, x: 70, y: 88, s: .62, body: '#FFCE00', accent: '#FF4433', extra: '#2B2BFF', depth: .7, dur: 10 },
-  { kind: 'roller' as const, x: 26, y: 88, s: .58, body: '#6FD0FF', accent: '#FFCE00', extra: '#2B2BFF', depth: .9, dur: 11 },
+  { kind: 'rocket'  as const, x: 12, y: 22, s: 1.0, body: '#FFF4E4', accent: '#FF4433', extra: '#2B2BFF', depth: 1.5, dur: 7 },
+  { kind: 'ufo'     as const, x: 84, y: 16, s: .82, body: '#7B3FE4', accent: '#B7F04A', extra: '#6FD0FF', depth: 2.2, dur: 9 },
+  { kind: 'racer'   as const, x: 88, y: 68, s: .9,  body: '#FF4433', accent: '#FFF4E4', extra: '#FFCE00', depth: 1.1, dur: 6.2 },
+  { kind: 'dino'    as const, x: 8,  y: 70, s: .86, body: '#B7F04A', accent: '#FF4433', extra: '#FFCE00', depth: 1.8, dur: 8 },
+  { kind: 'train'   as const, x: 70, y: 88, s: .62, body: '#58E3B4', accent: '#FF4433', extra: '#FFF4E4', depth: .7, dur: 10 },
+  { kind: 'unicorn' as const, x: 26, y: 88, s: .58, body: '#FFF4E4', accent: '#FF7FC4', extra: '#6FD0FF', depth: .9, dur: 11 },
 ];
 
 interface Pop { id: number; word: string; x: number; y: number; }
@@ -31,7 +32,7 @@ let popId = 1;
 export default function Hero({ onExplore }: { onExplore: () => void }) {
   const pointer = usePointer();
   const touch = useIsTouch();
-  const { startChaos } = useShop();
+  const { startChaos, openSheet } = useShop();
   const stage = useRef<HTMLDivElement>(null);
   const botWrap = useRef<HTMLDivElement>(null);
   const orbitRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -121,8 +122,9 @@ export default function Hero({ onExplore }: { onExplore: () => void }) {
           <div
             className="toy-float hero-orbit-inner"
             style={{ ['--dur' as string]: `${o.dur}s`, ['--delay' as string]: `${i * .6}s`, ['--rot' as string]: `${(i % 2 ? 1 : -1) * 8}deg` }}
-            data-cursor="play"
+            data-cursor="view"
             onPointerDown={() => { play('pop'); }}
+            onClick={() => openSheet(o.kind)}
           >
             <Toy kind={o.kind} body={o.body} accent={o.accent} extra={o.extra} look={look} spin={0} />
           </div>
@@ -159,8 +161,8 @@ export default function Hero({ onExplore }: { onExplore: () => void }) {
             <span className="hero-btn-knob" aria-hidden />
           </ToyButton>
           <p className="hero-note body-copy">
-            Ocho juguetes. Veinticuatro combinaciones de color. Hechos para desmontarse,
-            lanzarse, apilarse y volver a montarse mal.
+            {PRODUCTS.length} juguetes. {PRODUCTS.reduce((n, p) => n + p.colorways.length, 0)} combinaciones
+            de color. Hechos para desmontarse, lanzarse, apilarse y volver a montarse mal.
           </p>
         </div>
       </div>

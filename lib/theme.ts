@@ -24,7 +24,6 @@ export const PALETTES: Palette[] = [
   { id: 'lemon',   name: 'Limón Alto',   bg: '#FFCE00', fg: '#241A00', a: '#FF4433', b: '#7B3FE4', c: '#FFF4E4', d: '#2B2BFF', surface: '#FFF0B8' },
   { id: 'bubble',  name: 'Chicle',    bg: '#FF7FC4', fg: '#2A0016', a: '#FFCE00', b: '#2B2BFF', c: '#FFF4E4', d: '#B7F04A', surface: '#FFC2E2' },
   { id: 'electric',name: 'Eléctrico',     bg: '#2B2BFF', fg: '#EFF0FF', a: '#FFCE00', b: '#FF7FC4', c: '#58E3B4', d: '#FF7A1A', surface: '#4B4BFF' },
-  { id: 'lime',    name: 'Lima Ácida',    bg: '#B7F04A', fg: '#0F1A00', a: '#E5007D', b: '#2B2BFF', c: '#FF7A1A', d: '#100C14', surface: '#D3FA8C' },
   { id: 'mint',    name: 'Menta Fría',    bg: '#58E3B4', fg: '#00291D', a: '#FF4433', b: '#7B3FE4', c: '#FFCE00', d: '#2B2BFF', surface: '#93EFCE' },
   { id: 'grape',   name: 'Uva',   bg: '#7B3FE4', fg: '#F5EEFF', a: '#B7F04A', b: '#FF7FC4', c: '#FFCE00', d: '#6FD0FF', surface: '#9464EC' },
   { id: 'tomato',  name: 'Tomate',  bg: '#FF4433', fg: '#2A0400', a: '#FFCE00', b: '#2B2BFF', c: '#FFF4E4', d: '#FF7FC4', surface: '#FF7062' },

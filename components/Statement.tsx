@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import Toy from '@/components/Toy';
 import { SplitHeading } from '@/components/ui';
 import type { ToyKind } from '@/data/catalog';
+import { useShop } from '@/lib/store';
 
 /**
  * The quiet beat. After a loud, interactive section the page needs to stop
@@ -17,6 +18,7 @@ export default function Statement({
   kind: ToyKind; palette: string; body: string; accent: string; extra: string;
 }) {
   const root = useRef<HTMLElement>(null);
+  const { openSheet } = useShop();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -32,7 +34,9 @@ export default function Statement({
     <section id={id} className="scene statement" data-palette={palette} ref={root}>
       <div className="stm-inner">
         <SplitHeading text={line1} className="t-mega stm-l1" />
-        <div className="stm-toy"><Toy kind={kind} body={body} accent={accent} extra={extra} look={{ x: 0, y: 0 }} /></div>
+        <div className="stm-toy" data-cursor="view" onClick={() => openSheet(kind)}>
+          <Toy kind={kind} body={body} accent={accent} extra={extra} look={{ x: 0, y: 0 }} />
+        </div>
         <SplitHeading text={line2} className="t-mega stm-l2" sticker />
       </div>
       <p className="body-copy stm-copy">{copy}</p>

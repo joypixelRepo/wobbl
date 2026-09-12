@@ -6,11 +6,13 @@ import { SplitHeading, Sticker, ToyButton, Marquee } from '@/components/ui';
 import { PRODUCTS } from '@/data/catalog';
 import { play, fanfare } from '@/lib/sound';
 import { rand, pick } from '@/lib/hooks';
+import { useShop } from '@/lib/store';
 
 interface Runner { id: number; kind: (typeof PRODUCTS)[number]['kind']; body: string; accent: string; extra: string; top: number; size: number; dur: number; dir: 1 | -1; delay: number; }
 let rid = 1;
 
 export default function Footer({ onTop }: { onTop: () => void }) {
+  const { openSheet } = useShop();
   const [runners, setRunners] = useState<Runner[]>([]);
   const [sent, setSent] = useState(false);
   const email = useRef<HTMLInputElement>(null);
@@ -75,9 +77,9 @@ export default function Footer({ onTop }: { onTop: () => void }) {
             <ul className="footer-list">
               {PRODUCTS.slice(0, 5).map((p) => (
                 <li key={p.id}>
-                  <a href="#shop" onPointerEnter={() => play('click')} data-cursor="play">
+                  <button type="button" onPointerEnter={() => play('click')} onClick={() => openSheet(p.id)} data-cursor="view">
                     {p.name} <i>{p.price} €</i>
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -115,12 +117,14 @@ export default function Footer({ onTop }: { onTop: () => void }) {
 
       {/* the parade */}
       {runners.length > 0 && (
-        <div className="parade" aria-hidden>
+        <div className="parade">
           {runners.map((r) => (
             <span
               key={r.id}
               className={`parade-toy ${r.dir === 1 ? 'ltr' : 'rtl'}`}
               style={{ top: `${r.top}%`, width: r.size, animationDuration: `${r.dur}s`, animationDelay: `${r.delay}s` }}
+              data-cursor="view"
+              onClick={() => openSheet(r.kind)}
             >
               <Toy kind={r.kind} body={r.body} accent={r.accent} extra={r.extra} shadow={false} />
             </span>

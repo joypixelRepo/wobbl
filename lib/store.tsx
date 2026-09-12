@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { PRODUCTS, type Product } from '@/data/catalog';
+import { PRODUCTS, byKind, byProductId, type Product, type ToyKind } from '@/data/catalog';
 import { play, fanfare, setSound, isSoundOn, restoreSoundPreference } from '@/lib/sound';
 
 export interface CartLine {
@@ -22,6 +22,12 @@ interface Ctx {
 
   boxOpen: boolean;
   setBoxOpen: (v: boolean) => void;
+
+  /** la ficha de producto abierta, si hay alguna */
+  sheet: Product | null;
+  /** abre la ficha desde cualquier punto de la web, por id o por tipo */
+  openSheet: (ref: string | ToyKind) => void;
+  closeSheet: () => void;
 
   soundOn: boolean;
   toggleSound: () => void;
@@ -54,6 +60,7 @@ let flightId = 1;
 export function ShopProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [boxOpen, setBoxOpen] = useState(false);
+  const [sheet, setSheet] = useState<Product | null>(null);
   const [soundOn, setSoundOn] = useState(false);
   const [chaos, setChaos] = useState(false);
   const [flights, setFlights] = useState<Flight[]>([]);
@@ -122,6 +129,16 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   const clear = useCallback(() => setLines([]), []);
 
+  /* Acepta el id del producto o el tipo de dibujo, porque los juguetes
+     decorativos de la página solo saben de qué tipo son. */
+  const openSheet = useCallback((ref: string) => {
+    const product = byProductId(ref) ?? byKind(ref as ToyKind);
+    if (!product) return;
+    setSheet(product);
+    play('whoosh');
+  }, []);
+  const closeSheet = useCallback(() => { setSheet(null); play('click'); }, []);
+
   const toggleSound = useCallback(() => {
     const next = !isSoundOn();
     setSound(next);
@@ -146,6 +163,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   const value: Ctx = {
     lines, count, total, add, remove, setQty, clear,
     boxOpen, setBoxOpen,
+    sheet, openSheet, closeSheet,
     soundOn, toggleSound, sfx: play,
     chaos, startChaos,
     flights,

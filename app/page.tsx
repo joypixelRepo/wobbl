@@ -10,6 +10,7 @@ import Cursor from '@/components/Cursor';
 import Hud from '@/components/Hud';
 import ToyBoxMenu from '@/components/ToyBoxMenu';
 import ToyBoxCart from '@/components/ToyBoxCart';
+import ProductSheet from '@/components/ProductSheet';
 import Transition, { type TransitionHandle } from '@/components/Transition';
 import EggFriend from '@/components/EggFriend';
 
@@ -86,6 +87,7 @@ export default function Page() {
       <Hud menuOpen={menu} onMenu={() => setMenu((m) => !m)} onLogoEgg={() => setEgg((n) => n + 1)} />
       <ToyBoxMenu open={menu} onClose={() => setMenu(false)} onNavigate={goto} />
       <ToyBoxCart />
+      <ProductSheet />
       <Transition ref={transition} />
       <EggFriend trigger={egg} />
 
@@ -109,7 +111,7 @@ export default function Page() {
           line1="IMAGINACIÓN"
           line2="ENORME."
           copy="Un juguete tiene que sobrevivir a que se sienten encima, a bajar las escaleras por su cuenta y a pasar una semana en el jardín. Todo lo que hacemos está pensado para desmontarse y volver a montarse. Esa es, básicamente, la gracia."
-          kind="planet"
+          kind="castle"
           palette="grape"
           body="#B7F04A" accent="#FFCE00" extra="#FF7FC4"
         />
@@ -139,7 +141,7 @@ export default function Page() {
           line1="VAMOS"
           line2="A JUGAR."
           copy="Esa es toda la filosofía. No hay un segundo párrafo."
-          kind="spring"
+          kind="ufo"
           palette="tomato"
           body="#FFCE00" accent="#2B2BFF" extra="#FFF4E4"
         />

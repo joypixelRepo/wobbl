@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useIsTouch, useRaf, lerp } from '@/lib/hooks';
+import { useIsTouch, useRaf } from '@/lib/hooks';
 
 type Mode = 'default' | 'play' | 'grab' | 'build' | 'open' | 'drag' | 'view' | 'press';
 
@@ -26,10 +26,13 @@ export default function Cursor() {
   const [mode, setMode] = useState<Mode>('default');
   const [down, setDown] = useState(false);
   const target = useRef({ x: -100, y: -100 });
-  const pos = useRef({ x: -100, y: -100 });
-  const ringPos = useRef({ x: -100, y: -100 });
+  const painted = useRef({ x: -100, y: -100 });
   const parts = useRef<Particle[]>([]);
   const lastEmit = useRef(0);
+  // The painter runs from the pointer event itself, so it needs the current
+  // mode and press state without waiting for a React render.
+  const modeRef = useRef<Mode>('default');
+  const downRef = useRef(false);
 
   useEffect(() => {
     if (touch) return;
@@ -42,12 +45,16 @@ export default function Cursor() {
     const move = (e: PointerEvent) => {
       target.current.x = e.clientX;
       target.current.y = e.clientY;
+      // Paint from the event, not from the next frame: the drawn cursor sits
+      // exactly where the system pointer is, with no easing and no lag.
+      paint(performance.now());
       const el = (e.target as HTMLElement)?.closest?.('[data-cursor]') as HTMLElement | null;
       const next = (el?.dataset.cursor as Mode) || 'default';
+      modeRef.current = next;
       setMode((m) => (m === next ? m : next));
     };
-    const dn = (e: PointerEvent) => { setDown(true); burst(e.clientX, e.clientY); };
-    const up = () => setDown(false);
+    const dn = (e: PointerEvent) => { downRef.current = true; setDown(true); burst(e.clientX, e.clientY); };
+    const up = () => { downRef.current = false; setDown(false); };
     const leave = () => { target.current.x = -200; target.current.y = -200; };
     window.addEventListener('pointermove', move, { passive: true });
     window.addEventListener('pointerdown', dn, { passive: true });
@@ -74,26 +81,30 @@ export default function Cursor() {
     }
   }
 
-  useRaf((dt, t) => {
-    if (touch) return;
-    // Dot follows almost instantly; ring lags for a springy, toy-like feel.
-    pos.current.x = lerp(pos.current.x, target.current.x, 1 - Math.pow(0.0005, dt));
-    pos.current.y = lerp(pos.current.y, target.current.y, 1 - Math.pow(0.0005, dt));
-    ringPos.current.x = lerp(ringPos.current.x, target.current.x, 1 - Math.pow(0.02, dt));
-    ringPos.current.y = lerp(ringPos.current.y, target.current.y, 1 - Math.pow(0.02, dt));
-
-    if (dot.current) dot.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%,-50%)`;
+  /* Dot and ring are pinned 1:1 to the system pointer — no smoothing, no
+     trailing. Only the idle wobble and the press squash are animated. */
+  const paint = (t: number) => {
+    const { x, y } = target.current;
+    if (dot.current) dot.current.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%,-50%)`;
     if (ring.current) {
-      const s = SHAPES[mode].size;
-      const wob = mode === 'default' ? 0 : Math.sin(t / 220) * 3;
+      const m = modeRef.current;
+      const s = SHAPES[m].size;
+      const wob = m === 'default' ? 0 : Math.sin(t / 220) * 3;
       ring.current.style.transform =
-        `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%,-50%) scale(${(down ? 0.82 : 1) * (1 + wob / 100)})`;
+        `translate3d(${x}px, ${y}px, 0) translate(-50%,-50%) scale(${(downRef.current ? 0.82 : 1) * (1 + wob / 100)})`;
       ring.current.style.width = `${s}px`;
       ring.current.style.height = `${s}px`;
     }
+  };
+
+  useRaf((dt, t) => {
+    if (touch) return;
+    paint(t);
 
     // Trail particles — only while actually moving, and only over hot zones.
-    const speed = Math.hypot(target.current.x - ringPos.current.x, target.current.y - ringPos.current.y);
+    const speed = Math.hypot(target.current.x - painted.current.x, target.current.y - painted.current.y);
+    painted.current.x = target.current.x;
+    painted.current.y = target.current.y;
     if (mode !== 'default' && speed > 6 && t - lastEmit.current > 34) {
       lastEmit.current = t;
       parts.current.push({

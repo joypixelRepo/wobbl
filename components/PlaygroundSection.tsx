@@ -139,7 +139,7 @@ export default function PlaygroundSection() {
   };
 
   return (
-    <section id="playground" className="scene playground" data-palette="lime">
+    <section id="playground" className="scene playground" data-palette="mint">
       <div className="pg-head">
         <div>
           <Sticker rotate={-4} tone="b">SECCIÓN 05 — SIN SUPERVISIÓN</Sticker>

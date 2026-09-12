@@ -85,12 +85,13 @@ export default function ToyBoxCart() {
             const cw = l.product.colorways[l.colorway];
             return (
               <div className="tbc-line" key={l.key}>
-                <div className="tbc-thumb" style={{ background: cw.extra }}>
+                {/* Fondo blanco, igual que la ficha: el color lo pone el juguete. */}
+                <div className="tbc-thumb" style={{ background: '#ffffff' }}>
                   <Toy kind={l.product.kind} body={cw.body} accent={cw.accent} extra={cw.extra} shadow={false} />
                 </div>
                 <div className="tbc-info">
                   <strong>{l.product.name}</strong>
-                  <span className="tbc-cw">{cw.name} · {l.product.ages}</span>
+                  <span className="tbc-cw">{cw.name} · {l.product.size}</span>
                   <div className="tbc-qty">
                     <button onClick={() => setQty(l.key, l.qty - 1)} data-cursor="press" type="button" aria-label="Uno menos">–</button>
                     <b>{l.qty}</b>
