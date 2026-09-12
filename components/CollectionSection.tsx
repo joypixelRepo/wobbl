@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Toy from '@/components/Toy';
+import ProductShot from '@/components/ProductShot';
 import { SplitHeading, Sticker } from '@/components/ui';
 import { FEATURED, PRODUCTS } from '@/data/catalog';
 import { play } from '@/lib/sound';
@@ -128,14 +128,7 @@ export default function CollectionSection() {
             >
               {pl.shelf && <span className="col-shelf" aria-hidden />}
               <div className="col-toy">
-                <Toy
-                  kind={p.kind}
-                  body={cw.body}
-                  accent={cw.accent}
-                  extra={cw.extra}
-                  look={{ x: hover === p.id ? .5 : 0, y: 0 }}
-                  spin={hover === p.id ? 40 : 0}
-                />
+                <ProductShot product={p} colorway={0} sizes="(max-width: 900px) 56vw, 300px" />
               </div>
               <span className="col-tag">
                 <b>{p.name}</b>

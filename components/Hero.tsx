@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Toy from '@/components/Toy';
+import ProductShot from '@/components/ProductShot';
 import { SplitHeading, ToyButton, Sticker } from '@/components/ui';
 import { usePointer, useRaf, useIsTouch, lerp, rand } from '@/lib/hooks';
 import { play } from '@/lib/sound';
@@ -17,13 +18,15 @@ const REACTIONS: Record<string, { word: string; sound: 'boing' | 'pop' | 'snap' 
   legs:   { word: '¡PLAF!',  sound: 'click' },
 };
 
+/* Las piezas que flotan son productos del catálogo, no dibujos sueltos:
+   así salen con la misma ficha horneada que se ve en la estantería. */
 const ORBIT = [
-  { kind: 'rocket'  as const, x: 12, y: 22, s: 1.0, body: '#FFF4E4', accent: '#FF4433', extra: '#2B2BFF', depth: 1.5, dur: 7 },
-  { kind: 'ufo'     as const, x: 84, y: 16, s: .82, body: '#7B3FE4', accent: '#B7F04A', extra: '#6FD0FF', depth: 2.2, dur: 9 },
-  { kind: 'racer'   as const, x: 88, y: 68, s: .9,  body: '#FF4433', accent: '#FFF4E4', extra: '#FFCE00', depth: 1.1, dur: 6.2 },
-  { kind: 'dino'    as const, x: 8,  y: 70, s: .86, body: '#B7F04A', accent: '#FF4433', extra: '#FFCE00', depth: 1.8, dur: 8 },
-  { kind: 'train'   as const, x: 70, y: 88, s: .62, body: '#58E3B4', accent: '#FF4433', extra: '#FFF4E4', depth: .7, dur: 10 },
-  { kind: 'unicorn' as const, x: 26, y: 88, s: .58, body: '#FFF4E4', accent: '#FF7FC4', extra: '#6FD0FF', depth: .9, dur: 11 },
+  { id: 'cohete',            cw: 0, x: 12, y: 22, s: 1.0, depth: 1.5, dur: 7 },
+  { id: 'nave-espacial',     cw: 0, x: 84, y: 16, s: .82, depth: 2.2, dur: 9 },
+  { id: 'coche-de-carreras', cw: 0, x: 88, y: 68, s: .9,  depth: 1.1, dur: 6.2 },
+  { id: 'dinosaurio',        cw: 0, x: 8,  y: 70, s: .86, depth: 1.8, dur: 8 },
+  { id: 'tren-de-vapor',     cw: 0, x: 70, y: 88, s: .62, depth: .7, dur: 10 },
+  { id: 'unicornio',         cw: 0, x: 26, y: 88, s: .58, depth: .9, dur: 11 },
 ];
 
 interface Pop { id: number; word: string; x: number; y: number; }
@@ -114,7 +117,7 @@ export default function Hero({ onExplore }: { onExplore: () => void }) {
       {/* floating cast */}
       {ORBIT.map((o, i) => (
         <div
-          key={o.kind + i}
+          key={o.id}
           className="hero-orbit"
           style={{ left: `${o.x}%`, top: `${o.y}%`, width: `clamp(56px, ${9 * o.s}vw, ${150 * o.s}px)` }}
           ref={(el) => { orbitRefs.current[i] = el; }}
@@ -124,9 +127,9 @@ export default function Hero({ onExplore }: { onExplore: () => void }) {
             style={{ ['--dur' as string]: `${o.dur}s`, ['--delay' as string]: `${i * .6}s`, ['--rot' as string]: `${(i % 2 ? 1 : -1) * 8}deg` }}
             data-cursor="view"
             onPointerDown={() => { play('pop'); }}
-            onClick={() => openSheet(o.kind)}
+            onClick={() => openSheet(o.id)}
           >
-            <Toy kind={o.kind} body={o.body} accent={o.accent} extra={o.extra} look={look} spin={0} />
+            <ProductShot product={o.id} colorway={o.cw} sizes="(max-width: 700px) 24vw, 150px" />
           </div>
         </div>
       ))}

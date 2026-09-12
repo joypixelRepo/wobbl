@@ -3,9 +3,9 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Toy from '@/components/Toy';
+import ProductShot from '@/components/ProductShot';
 import { SplitHeading, Sticker } from '@/components/ui';
-import { STORY } from '@/data/catalog';
+import { STORY, byKind } from '@/data/catalog';
 import { play } from '@/lib/sound';
 import { useShop } from '@/lib/store';
 
@@ -76,7 +76,7 @@ export default function StorySection() {
             const c = PANEL_COLORS[i % PANEL_COLORS.length];
             return (
               <span key={s2.year} style={{ background: c.bg }} data-cursor="view" onClick={() => openSheet(s2.kind)}>
-                <Toy kind={s2.kind} body={c.a} accent={c.b} extra={c.c} shadow={false} />
+                <ProductShot product={byKind(s2.kind)!} sizes="60px" />
               </span>
             );
           })}
@@ -94,7 +94,7 @@ export default function StorySection() {
           >
             <div className="st-art" data-cursor="view" onPointerDown={() => play('boing')} onClick={() => openSheet(s.kind)}>
               <span className="st-blob" style={{ background: c.a }} aria-hidden />
-              <Toy kind={s.kind} body={c.a} accent={c.b} extra={c.c} look={{ x: 0, y: 0 }} />
+              <ProductShot product={byKind(s.kind)!} sizes="(max-width: 860px) 62vw, 280px" />
               <span className="st-frame-no" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
             </div>
 

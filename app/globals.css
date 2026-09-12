@@ -1099,6 +1099,15 @@ body.chaos h1, body.chaos h2 { animation: chaos-shake .28s steps(2) infinite; }
   .col-arrow { display: none; }
 }
 
+/* Las fichas horneadas ocupan el mismo hueco que ocupaba el SVG. */
+.product-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 /* ===================== PRODUCT DETAIL ===================== */
 /* Escenario 3D: el lienzo ocupa todo el hueco del juguete y la rotación
    la lleva el propio visor, no el transform de CSS. */

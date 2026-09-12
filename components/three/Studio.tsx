@@ -30,10 +30,14 @@ import { Environment, Lightformer, ContactShadows, PerspectiveCamera } from '@re
  * canto y el grosor del vidrio sobre blanco.
  */
 
-export function StudioRig({ shadows = true, bg = '#ffffff' }: { shadows?: boolean; bg?: string }) {
+export function StudioRig({ shadows = true, bg = '#ffffff' }: { shadows?: boolean; bg?: string | null }) {
   return (
     <>
-      <color attach="background" args={[bg]} />
+      {/* Sin fondo (bg null) el lienzo queda transparente, que es lo que
+          necesita el horneado de fichas: three limpia igualmente el búfer
+          de transmisión con blanco al 50%, así que el vidrio sigue
+          teniendo algo que muestrear. */}
+      {bg && <color attach="background" args={[bg]} />}
       {/* Cubo de luz: una caja suave arriba (luz clave), dos paneles
           laterales de relleno y una tira estrecha detrás para el filo. */}
       <Environment resolution={256}>

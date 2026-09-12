@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
-import Toy from '@/components/Toy';
+import ProductShot from '@/components/ProductShot';
 import { SplitHeading, Sticker, ToyButton } from '@/components/ui';
 import { CATEGORIES, PRODUCTS, type CategoryId, type Product } from '@/data/catalog';
 import { useShop } from '@/lib/store';
@@ -98,15 +98,9 @@ function ToyBoxCard({ product, onOpen }: { product: Product; onOpen: () => void 
   const { add } = useShop();
   const [cw, setCw] = useState(0);
   const [open, setOpen] = useState(false);
-  const [turn, setTurn] = useState(0);
   const box = useRef<HTMLDivElement>(null);
-  // `moved` acumula el recorrido del puntero: si apenas se ha movido es
-  // un clic para abrir la ficha, y si no, es un arrastre para girar.
-  const drag = useRef({ on: false, x: 0, start: 0, moved: 0 });
   const touch = useIsTouch();
   const c = product.colorways[cw];
-
-  const flipped = ((turn % 360) + 360) % 360 > 90 && ((turn % 360) + 360) % 360 < 270;
 
   return (
     <article
@@ -124,27 +118,10 @@ function ToyBoxCard({ product, onOpen }: { product: Product; onOpen: () => void 
 
         <div
           className="tbx-toy"
-          style={{ transform: `perspective(700px) rotateY(${turn}deg) scaleX(${flipped ? -1 : 1})` }}
           data-cursor="view"
-          onPointerDown={(e) => {
-            drag.current = { on: true, x: e.clientX, start: turn, moved: 0 };
-            try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* no capture available */ }
-            if (touch) setOpen(true);
-          }}
-          onPointerMove={(e) => {
-            if (!drag.current.on) return;
-            const dx = e.clientX - drag.current.x;
-            drag.current.moved = Math.max(drag.current.moved, Math.abs(dx));
-            setTurn(drag.current.start + dx * .8);
-          }}
-          onPointerUp={() => {
-            const wasDrag = drag.current.moved > 6;
-            drag.current.on = false;
-            if (!wasDrag) onOpen();
-          }}
-          onPointerCancel={() => { drag.current.on = false; }}
+          onClick={() => { if (touch) setOpen(true); onOpen(); }}
         >
-          <Toy kind={product.kind} body={c.body} accent={c.accent} extra={c.extra} look={{ x: open ? .4 : 0, y: open ? -.2 : 0 }} spin={turn} shadow={false} />
+          <ProductShot product={product} colorway={cw} />
         </div>
 
         <span className="tbx-tag" aria-hidden>

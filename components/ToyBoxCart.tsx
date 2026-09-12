@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import Toy from '@/components/Toy';
+import ProductShot from '@/components/ProductShot';
 import { useShop } from '@/lib/store';
 import { play, fanfare } from '@/lib/sound';
 
@@ -87,7 +88,7 @@ export default function ToyBoxCart() {
               <div className="tbc-line" key={l.key}>
                 {/* Fondo blanco, igual que la ficha: el color lo pone el juguete. */}
                 <div className="tbc-thumb" style={{ background: '#ffffff' }}>
-                  <Toy kind={l.product.kind} body={cw.body} accent={cw.accent} extra={cw.extra} shadow={false} />
+                  <ProductShot product={l.product} colorway={l.colorway} sizes="78px" />
                 </div>
                 <div className="tbc-info">
                   <strong>{l.product.name}</strong>
@@ -157,10 +158,9 @@ function FlyingToy({ flight }: { flight: import('@/lib/store').Flight }) {
       .to(el, { scale: .12, rotate: 400, duration: .85, ease: 'power2.in' }, 0)
       .to(el, { opacity: 0, duration: .1 }, .8);
   }, [flight]);
-  const cw = flight.product.colorways[flight.colorway];
   return (
     <div ref={ref} className="flight" style={{ width: flight.from.size, height: flight.from.size }}>
-      <Toy kind={flight.product.kind} body={cw.body} accent={cw.accent} extra={cw.extra} shadow={false} />
+      <ProductShot product={flight.product} colorway={flight.colorway} sizes="220px" />
     </div>
   );
 }

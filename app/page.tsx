@@ -111,9 +111,8 @@ export default function Page() {
           line1="IMAGINACIÓN"
           line2="ENORME."
           copy="El vidrio no admite arreglos: o sale a la primera o vuelve al horno hecho pedazos. Cada pieza pasa entera por las manos de una sola persona, desde la caña hasta el recocido. Esa es, básicamente, la gracia."
-          kind="castle"
+          product="castillo"
           palette="grape"
-          body="#B7F04A" accent="#FFCE00" extra="#FF7FC4"
         />
 
         <CollectionSection />
@@ -141,9 +140,9 @@ export default function Page() {
           line1="MÍRALO A"
           line2="CONTRALUZ."
           copy="Esa es toda la instrucción. No hay un segundo párrafo."
-          kind="ufo"
+          product="nave-espacial"
+          colorway={2}
           palette="tomato"
-          body="#FFCE00" accent="#2B2BFF" extra="#FFF4E4"
         />
 
         <ShopSection />
