@@ -15,9 +15,9 @@ function Cell({ kind }: { kind: ToyKind }) {
   const c = product.colorways[0];
   const Model = MODELS[kind]!;
   return (
-    <div style={{ background: '#efeae1', borderRadius: 14, overflow: 'hidden', aspectRatio: '4/3' }}>
+    <div style={{ background: '#ffffff', borderRadius: 14, overflow: 'hidden', aspectRatio: '4/3' }}>
       <Canvas shadows dpr={[1, 2]} gl={{ ...GL_SETTINGS, preserveDrawingBuffer: true }}>
-        <ProductStage>
+        <ProductStage bg="#ffffff">
           <Model body={c.body} accent={c.accent} extra={c.extra} spin={0} />
         </ProductStage>
       </Canvas>
@@ -39,9 +39,9 @@ function Grid() {
     const c = product.colorways[Number(params.get('cw') ?? 0)];
     const Model = MODELS[solo as ToyKind]!;
     return (
-      <div style={{ height: '100vh', background: '#efeae1' }}>
+      <div style={{ height: '100vh', background: '#ffffff' }}>
         <Canvas shadows dpr={[1, 2]} gl={{ ...GL_SETTINGS, preserveDrawingBuffer: true }}>
-        <ProductStage>
+        <ProductStage bg="#ffffff">
             <Model body={c.body} accent={c.accent} extra={c.extra} spin={0} />
           </ProductStage>
           <OrbitControls makeDefault enablePan={false} minDistance={0.4} maxDistance={5} />

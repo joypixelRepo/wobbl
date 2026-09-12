@@ -30,13 +30,13 @@
  */
 export const CAR_PAINT = {
   metalness: 0,
-  roughness: 0.26,
-  transmission: 0.32,
-  thickness: 0.26,
+  roughness: 0.06,
+  transmission: 0.64,
+  thickness: 0.45,
   ior: 1.5,
   clearcoat: 1,
-  clearcoatRoughness: 0.10,
-  envMapIntensity: 0.85,
+  clearcoatRoughness: 0.03,
+  envMapIntensity: 1.15,
   specularIntensity: 1,
 } as const;
 
@@ -47,25 +47,25 @@ export const CAR_PAINT = {
  */
 export const PLASTIC = {
   metalness: 0,
-  roughness: 0.16,
-  transmission: 0.08,
-  thickness: 0.10,
+  roughness: 0.10,
+  transmission: 0.22,
+  thickness: 0.14,
   ior: 1.5,
   clearcoat: 1,
-  clearcoatRoughness: 0.08,
-  envMapIntensity: 0.9,
+  clearcoatRoughness: 0.04,
+  envMapIntensity: 1.1,
 } as const;
 
 /** Vidrio satinado, esmerilado al chorro de arena. Sin reflejo nítido. */
 export const SOFT_PLASTIC = {
   metalness: 0,
-  roughness: 0.62,
-  transmission: 0.34,
-  thickness: 0.22,
+  roughness: 0.58,
+  transmission: 0.42,
+  thickness: 0.26,
   ior: 1.5,
-  clearcoat: 0.2,
-  clearcoatRoughness: 0.6,
-  envMapIntensity: 0.95,
+  clearcoat: 0.25,
+  clearcoatRoughness: 0.55,
+  envMapIntensity: 0.9,
 } as const;
 
 /** Vidrio negro para ruedas y orugas: opaco, pero con brillo de vidrio. */
@@ -89,39 +89,39 @@ export const CHROME = {
 
 /** Vidrio con inclusión metálica: cuerpos densos y muy reflectantes. */
 export const PAINTED_METAL = {
-  metalness: 0.25,
-  roughness: 0.10,
-  transmission: 0.34,
-  thickness: 0.28,
+  metalness: 0.2,
+  roughness: 0.08,
+  transmission: 0.48,
+  thickness: 0.34,
   ior: 1.5,
   clearcoat: 1,
-  clearcoatRoughness: 0.04,
-  envMapIntensity: 1.45,
+  clearcoatRoughness: 0.03,
+  envMapIntensity: 1.2,
 } as const;
 
 /** Vidrio ámbar, cálido y denso. Donde antes había haya. */
 export const WOOD = {
   color: '#d9a45f',
   metalness: 0,
-  roughness: 0.06,
-  transmission: 0.60,
-  thickness: 0.32,
+  roughness: 0.07,
+  transmission: 0.68,
+  thickness: 0.40,
   ior: 1.5,
   clearcoat: 1,
   clearcoatRoughness: 0.03,
-  envMapIntensity: 1.45,
+  envMapIntensity: 1.15,
 } as const;
 
 /** Cristal transparente sin apenas color: cúpulas, lunas y matraces. */
 export const TINTED = {
   metalness: 0,
-  roughness: 0.06,
-  transmission: 0.72,
+  roughness: 0.03,
+  transmission: 0.95,
   thickness: 0.14,
   ior: 1.52,
   clearcoat: 1,
-  clearcoatRoughness: 0.03,
-  envMapIntensity: 1.2,
+  clearcoatRoughness: 0.02,
+  envMapIntensity: 1.4,
 } as const;
 
 /**
@@ -131,11 +131,11 @@ export const TINTED = {
  */
 export const PLUSH = {
   metalness: 0,
-  roughness: 0.78,
-  transmission: 0.38,
-  thickness: 0.26,
+  roughness: 0.72,
+  transmission: 0.46,
+  thickness: 0.30,
   ior: 1.5,
-  clearcoat: 0.12,
-  clearcoatRoughness: 0.8,
-  envMapIntensity: 0.9,
+  clearcoat: 0.15,
+  clearcoatRoughness: 0.75,
+  envMapIntensity: 0.85,
 } as const;

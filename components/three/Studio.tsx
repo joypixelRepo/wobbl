@@ -16,33 +16,24 @@ import { Environment, Lightformer, ContactShadows, PerspectiveCamera } from '@re
  * ------------------------------------------------------------------ */
 
 /**
- * El ciclorama. Un objeto de vidrio sobre un fondo liso no se ve: la
- * gracia del vidrio es que DEFORMA lo que tiene detrás, y si detrás no
- * hay nada, no hay nada que deformar y la pieza se lee como plástico
- * brillante. Por eso el vidrio se fotografía siempre sobre un fondo
- * con suelo y horizonte, aunque el conjunto siga siendo blanco.
+ * El fondo del plató: blanco liso.
+ *
+ * Tiene que ser un fondo de escena OPACO, y eso no es un capricho de
+ * estilo. `transmission` no inventa lo que hay detrás del vidrio:
+ * MUESTREA la escena. Con el lienzo en `alpha: true` y sin fondo, lo
+ * que se muestrea es transparente, la `transmissionAlpha` cae a cero y
+ * la pieza se convierte en un agujero en el lienzo — ese era el motivo
+ * por el que los juguetes de vidrio desaparecían del todo.
+ *
+ * El volumen no lo da el fondo, lo da el entorno: el cubo de luz tiene
+ * base oscura y tiras claras, y son esos reflejos los que dibujan el
+ * canto y el grosor del vidrio sobre blanco.
  */
-export function Cove() {
-  return (
-    <group>
-      {/* Suelo y fondo dejan una línea de horizonte justo detrás de la
-          pieza: es esa línea, deformada al atravesar el vidrio, la que
-          delata que el objeto es transparente y no pintado. */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0.52]} receiveShadow>
-        <planeGeometry args={[3.4, 2.5]} />
-        <meshStandardMaterial color="#e4e0da" roughness={0.94} metalness={0} />
-      </mesh>
-      <mesh position={[0, 0.85, -0.73]} receiveShadow>
-        <planeGeometry args={[3.4, 2.2]} />
-        <meshStandardMaterial color="#fdfcfa" roughness={1} metalness={0} />
-      </mesh>
-    </group>
-  );
-}
 
-export function StudioRig({ shadows = true }: { shadows?: boolean }) {
+export function StudioRig({ shadows = true, bg = '#ffffff' }: { shadows?: boolean; bg?: string }) {
   return (
     <>
+      <color attach="background" args={[bg]} />
       {/* Cubo de luz: una caja suave arriba (luz clave), dos paneles
           laterales de relleno y una tira estrecha detrás para el filo. */}
       <Environment resolution={256}>
@@ -89,12 +80,12 @@ export function StudioRig({ shadows = true }: { shadows?: boolean }) {
       {shadows && (
         <ContactShadows
           position={[0, -0.001, 0]}
-          opacity={0.78}
-          scale={1.9}
-          blur={1.7}
-          far={0.55}
+          opacity={0.58}
+          scale={2.0}
+          blur={2.0}
+          far={0.6}
           resolution={1024}
-          color="#151019"
+          color="#2a2230"
         />
       )}
     </>
